@@ -62,9 +62,30 @@ OK, I've marked this task as not done yet:
 [T][ ] Clean room
 ____________________________________________________________
 ____________________________________________________________
+Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.
+____________________________________________________________
+
+____________________________________________________________
+Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.
+____________________________________________________________
+
+____________________________________________________________
+Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.
+____________________________________________________________
+
+____________________________________________________________
+Noted. I've removed this task:
+[T][ ] Clean room
+Now you have 5 tasks in the list.
+____________________________________________________________
+
+____________________________________________________________
+Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.
+____________________________________________________________
+
+____________________________________________________________
 Here are the tasks in your list:
 1. [T][X] Buy groceries
-2. [T][ ] Clean room
 3. [D][ ] Submit report (by: Sunday)
 4. [D][ ] Submit report (by: Sunday)
 5. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
@@ -81,6 +102,10 @@ ____________________________________________________________
 
 ____________________________________________________________
 The description of a todo cannot be empty!
+____________________________________________________________
+
+____________________________________________________________
+Invalid todo format! Use: todo <desc>.
 ____________________________________________________________
 
 ____________________________________________________________

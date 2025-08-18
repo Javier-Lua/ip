@@ -8,10 +8,16 @@ list
 mark 1
 mark 2
 unmark 2
+mark
+unmark
+delete
+delete 2
+deletebjadiw
 list
 deadline
 event
 todo
+todoajdwkd
 deadlinedajsbdjl
 deadline hi
 eventa dwnawldnn

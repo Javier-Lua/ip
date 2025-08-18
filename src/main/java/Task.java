@@ -35,6 +35,10 @@ public class Task {
         return this.tag;
     }
 
+    public void delete() {
+        Task.count -= 1;
+    }
+
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.getDescription();

@@ -1,9 +1,10 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Milo {
     public static void main(String[] args) {
         // Assuming no more than 100 tasks
-        Task[] tasks = new Task[100];
+        ArrayList<Task> tasks = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
         System.out.println("____________________________________________________________\n" +
                 " Hello! I'm Milo!\n" +
@@ -14,38 +15,49 @@ public class Milo {
         while(!input.equals("bye")) {
             try { // Wrap everything in try-catch block in order to catch any Milo Exceptions thrown up
                 if (input.equals("list")) {
-                    String[] list = new String[Task.getCount()]; // copy over tasks array into smaller array
+                    String[] list = new String[Task.getCount()]; // copy over tasks descriptions
                     for (int i = 0; i < Task.getCount(); i++) {
-                        list[i] = tasks[i].getTag() + ". " + tasks[i].toString();
+                        list[i] = tasks.get(i).getTag() + ". " + tasks.get(i).toString();
                     }
                     System.out.println("____________________________________________________________\n" +
                             "Here are the tasks in your list:\n" +
                             String.join("\n", list) + "\n" + // faster than += string concat
                             "____________________________________________________________\n");
-                } else if (input.startsWith("mark") || input.startsWith("unmark")) {
+                } else if (input.startsWith("mark") || input.startsWith("unmark") || input.startsWith("delete")) {
                     String[] parts = input.split(" "); // split when encounter spacing
+                    if (!input.contains(" ")) {
+                        throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.");
+                    }
                     if (parts.length == 2) {
                         try {
                             int num = Integer.parseInt(parts[1]);
                             if (num <= Task.getCount() && num > 0) {
                                 if (input.startsWith("mark")) {
-                                    tasks[num - 1].markAsDone();
+                                    tasks.get(num - 1).markAsDone();
                                     System.out.println("____________________________________________________________\n" +
                                             "Nice! I've marked this task as done:\n" +
-                                            tasks[num - 1].toString() +
+                                            tasks.get(num - 1).toString() +
                                             "\n" + "____________________________________________________________");
-                                } else {
-                                    tasks[num - 1].markAsUndone();
+                                } else if (input.startsWith("unmark")){
+                                    tasks.get(num - 1).markAsUndone();
                                     System.out.println("____________________________________________________________\n" +
                                             "OK, I've marked this task as not done yet:\n" +
-                                            tasks[num - 1].toString() +
+                                            tasks.get(num - 1).toString() +
                                             "\n" + "____________________________________________________________");
+                                } else {
+                                    Task temp = tasks.get(num - 1);
+                                    temp.delete();
+                                    tasks.remove(num - 1);
+                                    System.out.println("____________________________________________________________\n" +
+                                    "Noted. I've removed this task:\n" + temp + "\n" +
+                                    "Now you have " + Task.getCount() +" tasks in the list.\n" +
+                                    "____________________________________________________________\n");
                                 }
                             } else {
                                 throw new MiloException("Number out of range! Task number does not exist.");
                             }
                         } catch (NumberFormatException e) {
-                            throw new MiloException("Invalid mark command. Use: mark <number> or unmark <number>.");
+                            throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.");
                         }
                     }
                 } else {
@@ -53,6 +65,9 @@ public class Milo {
                     if (input.startsWith("todo")) {
                         if (input.length() <= 5) {
                             throw new MiloException("The description of a todo cannot be empty!");
+                        }
+                        if (input.charAt(4) != ' ') {
+                            throw new MiloException("Invalid todo format! Use: todo <desc>.");
                         }
                         t = new Todo(input.substring(5).trim());
                     } else if (input.startsWith("deadline")) {
@@ -80,7 +95,7 @@ public class Milo {
                     } else {
                         throw new MiloException("I'm sorry, I don't know what that means...");
                     }
-                    tasks[Task.getCount() - 1] = t; // number task once added
+                    tasks.add(t);
                     System.out.println("____________________________________________________________\n" +
                             "Got it. I've added this task:\n" +
                             t + "\n" +
