@@ -1,9 +1,12 @@
-public class Event extends Task{
+package Task;
+import enums.*;
+
+public class Event extends Task {
     private final String from;
     private final String to;
 
     public Event(String description, String from, String to) {
-        super(description);
+        super(description, TaskType.EVENT);
         this.from = from;
         this.to = to;
     }

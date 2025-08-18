@@ -1,14 +1,19 @@
-public class Task {
+package Task;
+import enums.*;
+
+public abstract class Task {
     private final String description;
-    private boolean isDone;
+    private Status status;
     private final int tag;
     private static int count = 0;
+    private final TaskType type;
 
-    public Task(String description) {
+    public Task(String description, TaskType type) {
         this.description = description;
-        this.isDone = false;
+        this.status = Status.NOT_DONE;
         Task.count += 1;
         this.tag = Task.count;
+        this.type = type;
     }
 
     public static int getCount() {
@@ -16,15 +21,19 @@ public class Task {
     }
 
     public String getStatusIcon() {
-        return (isDone ? "X" : " "); // mark done task with X
+        if (this.status == Status.DONE) {
+            return "X"; // mark done task with X
+        } else {
+            return " ";
+        }
     }
 
     public void markAsDone() {
-        this.isDone = true;
+        this.status = Status.DONE;
     }
 
     public void markAsUndone() {
-        this.isDone = false;
+        this.status = Status.NOT_DONE;
     }
 
     public String getDescription() {
@@ -39,9 +48,12 @@ public class Task {
         Task.count -= 1;
     }
 
+    public TaskType getType() {
+        return this.type;
+    }
+
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.getDescription();
     }
 }
-
