@@ -1,8 +1,8 @@
 public class Task {
-    protected String description;
-    protected boolean isDone;
-    protected int tag;
-    protected static int count = 0;
+    private final String description;
+    private boolean isDone;
+    private final int tag;
+    private static int count = 0;
 
     public Task(String description) {
         this.description = description;
@@ -33,6 +33,11 @@ public class Task {
 
     public int getTag() {
         return this.tag;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.getStatusIcon() + "] " + this.getDescription();
     }
 }
 

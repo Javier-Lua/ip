@@ -15,7 +15,7 @@ public class Milo {
             if (input.equals("list")) {
                 String[] list = new String[Task.getCount()]; // copy over tasks array into smaller array
                 for (int i = 0; i < Task.getCount(); i++) {
-                    list[i] = tasks[i].getTag() + ". [" + tasks[i].getStatusIcon() + "] " + tasks[i].getDescription();
+                    list[i] = tasks[i].getTag() + ". " + tasks[i].toString();
                 }
                 System.out.println("____________________________________________________________\n" +
                         "Here are the tasks in your list:\n" +
@@ -31,13 +31,13 @@ public class Milo {
                                 tasks[num - 1].markAsDone();
                                 System.out.println("____________________________________________________________\n" +
                                         "Nice! I've marked this task as done:\n" +
-                                        "[" + tasks[num - 1].getStatusIcon() + "] " + tasks[num - 1].getDescription() +
+                                        tasks[num - 1].toString() +
                                          "\n" + "____________________________________________________________");
                             } else {
                                 tasks[num - 1].markAsUndone();
                                 System.out.println("____________________________________________________________\n" +
                                         "OK, I've marked this task as not done yet:\n" +
-                                        "[" + tasks[num - 1].getStatusIcon() + "] " + tasks[num - 1].getDescription() +
+                                        tasks[num - 1].toString() +
                                         "\n" + "____________________________________________________________");
                             }
                         } else {
@@ -48,11 +48,27 @@ public class Milo {
                     }
                 }
             } else {
-                Task t = new Task(input);
-                tasks[Task.getCount() - 1] = t; // number task once added
-                System.out.println("____________________________________________________________\n" +
-                        "added: " + t.getDescription() + "\n" +
-                        "____________________________________________________________\n");
+                Task t = null;
+                if (input.startsWith("todo")) {
+                    t = new Todo(input.substring(5));
+                } else if (input.startsWith("deadline")) {
+                    String temp = input.substring(9);
+                    String[] parts = temp.split("/by");
+                    t = new Deadline(parts[0].trim(), parts[1].trim());
+                } else if (input.startsWith("event")) {
+                    String temp = input.substring(6);
+                    int fromInd = temp.indexOf("/from");
+                    int toInd = temp.indexOf("/to");
+                    t = new Event(temp.substring(0, fromInd), temp.substring(fromInd + 5, toInd), temp.substring(toInd + 3));
+                }
+                if (t != null) { // more error handling in Level-5
+                    tasks[Task.getCount() - 1] = t; // number task once added
+                    System.out.println("____________________________________________________________\n" +
+                            "Got it. I've added this task:\n" +
+                            t + "\n" +
+                            "Now you have " + Task.getCount() + " tasks in the list.\n" +
+                            "____________________________________________________________\n");
+                }
             }
             input = sc.nextLine();
         }
