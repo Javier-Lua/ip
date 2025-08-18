@@ -1,10 +1,19 @@
 todo Buy groceries
 todo Clean room
 deadline Submit report /by Sunday
+deadline Submit report/bySunday
 event Project meeting /from Mon 2pm /to 4pm
+event Project meeting/fromMon 2pm/to4pm
 list
 mark 1
-mark 3
+mark 2
 unmark 2
 list
+deadline
+event
+todo
+deadlinedajsbdjl
+deadline hi
+eventa dwnawldnn
+event hi
 bye

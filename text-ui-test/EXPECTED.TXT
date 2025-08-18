@@ -23,8 +23,20 @@ ____________________________________________________________
 
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] Project meeting (from: Mon 2pm to:  4pm)
+[D][ ] Submit report (by: Sunday)
 Now you have 4 tasks in the list.
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[E][ ] Project meeting (from: Mon 2pm to: 4pm)
+Now you have 5 tasks in the list.
+____________________________________________________________
+
+____________________________________________________________
+Got it. I've added this task:
+[E][ ] Project meeting (from: Mon 2pm to: 4pm)
+Now you have 6 tasks in the list.
 ____________________________________________________________
 
 ____________________________________________________________
@@ -32,7 +44,9 @@ Here are the tasks in your list:
 1. [T][ ] Buy groceries
 2. [T][ ] Clean room
 3. [D][ ] Submit report (by: Sunday)
-4. [E][ ] Project meeting (from: Mon 2pm to:  4pm)
+4. [D][ ] Submit report (by: Sunday)
+5. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
+6. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 
 ____________________________________________________________
@@ -41,7 +55,7 @@ Nice! I've marked this task as done:
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
-[D][X] Submit report (by: Sunday)
+[T][X] Clean room
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
@@ -51,8 +65,38 @@ ____________________________________________________________
 Here are the tasks in your list:
 1. [T][X] Buy groceries
 2. [T][ ] Clean room
-3. [D][X] Submit report (by: Sunday)
-4. [E][ ] Project meeting (from: Mon 2pm to:  4pm)
+3. [D][ ] Submit report (by: Sunday)
+4. [D][ ] Submit report (by: Sunday)
+5. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
+6. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
+____________________________________________________________
+
+____________________________________________________________
+The description of a deadline cannot be empty!
+____________________________________________________________
+
+____________________________________________________________
+The description of an event cannot be empty!
+____________________________________________________________
+
+____________________________________________________________
+The description of a todo cannot be empty!
+____________________________________________________________
+
+____________________________________________________________
+Invalid deadline format! Use: deadline <desc> /by <date>
+____________________________________________________________
+
+____________________________________________________________
+Invalid deadline format! Use: deadline <desc> /by <date>
+____________________________________________________________
+
+____________________________________________________________
+Invalid event format! Use: event <desc> /from <time> /to <time>
+____________________________________________________________
+
+____________________________________________________________
+Invalid event format! Use: event <desc> /from <time> /to <time>
 ____________________________________________________________
 
 ____________________________________________________________
