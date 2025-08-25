@@ -12,6 +12,15 @@ public class Event extends Task {
     }
 
     @Override
+    public String[] getFileInput() {
+        String[] s = super.getFileInput();
+        s[0] = "E";
+        s[3] = this.from;
+        s[4] = this.to;
+        return s;
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + this.from + " to: " + this.to + ")";
     }

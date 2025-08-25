@@ -10,6 +10,14 @@ public class Deadline extends Task {
     }
 
     @Override
+    public String[] getFileInput() {
+        String[] s = super.getFileInput();
+        s[0] = "D";
+        s[3] = this.by;
+        return s;
+    }
+
+    @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + this.by + ")";
     }

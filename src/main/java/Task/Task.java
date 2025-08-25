@@ -7,6 +7,7 @@ public abstract class Task {
     private final int tag;
     private static int count = 0;
     private final TaskType type;
+    private final String[] fileInput;
 
     public Task(String description, TaskType type) {
         this.description = description;
@@ -14,6 +15,22 @@ public abstract class Task {
         Task.count += 1;
         this.tag = Task.count;
         this.type = type;
+        this.fileInput = new String[] {"", "0", this.description, "", ""};
+    }
+
+    public static Task makeTask(TaskType type, String desc, String... dates) {
+        switch(type) {
+        case TODO:
+            return new Todo(desc);
+        case DEADLINE:
+            if (dates.length != 1) throw new IllegalArgumentException("Deadline needs one date!");
+            return new Deadline(desc, dates[0]);
+        case EVENT:
+            if (dates.length != 2) throw new IllegalArgumentException("Event needs two dates!");
+            return new Event(desc, dates[0], dates[1]);
+        default:
+            throw new IllegalArgumentException("Unknown Task Type: " + type);
+        }
     }
 
     public static int getCount() {
@@ -30,10 +47,12 @@ public abstract class Task {
 
     public void markAsDone() {
         this.status = Status.DONE;
+        this.fileInput[1] = "1";
     }
 
     public void markAsUndone() {
         this.status = Status.NOT_DONE;
+        this.fileInput[1] = "0";
     }
 
     public String getDescription() {
@@ -42,6 +61,10 @@ public abstract class Task {
 
     public int getTag() {
         return this.tag;
+    }
+
+    public String[] getFileInput() {
+        return this.fileInput;
     }
 
     public void delete() {
