@@ -4,6 +4,10 @@ ____________________________________________________________
 ____________________________________________________________
 
 ____________________________________________________________
+Okay! Task list has been cleared.
+____________________________________________________________
+
+____________________________________________________________
 Got it. I've added this task:
 [T][ ] Buy groceries
 Now you have 1 tasks in the list.
@@ -17,25 +21,25 @@ ____________________________________________________________
 
 ____________________________________________________________
 Got it. I've added this task:
-[D][ ] Submit report (by: Sunday)
+[D][ ] Submit report (by: Dec 12 2025 18:00)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 
 ____________________________________________________________
 Got it. I've added this task:
-[D][ ] Submit report (by: Sunday)
+[D][ ] Submit report (by: Dec 12 2025 18:00)
 Now you have 4 tasks in the list.
 ____________________________________________________________
 
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] Project meeting (from: Mon 2pm to: 4pm)
+[E][ ] Project meeting (from: Dec 12 2025 18:00 to: Dec 12 2025 22:00)
 Now you have 5 tasks in the list.
 ____________________________________________________________
 
 ____________________________________________________________
 Got it. I've added this task:
-[E][ ] Project meeting (from: Mon 2pm to: 4pm)
+[E][ ] Project meeting (from: Dec 12 2025 18:00 to: Dec 12 2025 22:00)
 Now you have 6 tasks in the list.
 ____________________________________________________________
 
@@ -43,10 +47,10 @@ ____________________________________________________________
 Here are the tasks in your list:
 1. [T][ ] Buy groceries
 2. [T][ ] Clean room
-3. [D][ ] Submit report (by: Sunday)
-4. [D][ ] Submit report (by: Sunday)
-5. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
-6. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
+3. [D][ ] Submit report (by: Dec 12 2025 18:00)
+4. [D][ ] Submit report (by: Dec 12 2025 18:00)
+5. [E][ ] Project meeting (from: Dec 12 2025 18:00 to: Dec 12 2025 22:00)
+6. [E][ ] Project meeting (from: Dec 12 2025 18:00 to: Dec 12 2025 22:00)
 ____________________________________________________________
 
 ____________________________________________________________
@@ -86,10 +90,10 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1. [T][X] Buy groceries
-2. [D][ ] Submit report (by: Sunday)
-3. [D][ ] Submit report (by: Sunday)
-4. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
-5. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
+2. [D][ ] Submit report (by: Dec 12 2025 18:00)
+3. [D][ ] Submit report (by: Dec 12 2025 18:00)
+4. [E][ ] Project meeting (from: Dec 12 2025 18:00 to: Dec 12 2025 22:00)
+5. [E][ ] Project meeting (from: Dec 12 2025 18:00 to: Dec 12 2025 22:00)
 ____________________________________________________________
 
 ____________________________________________________________
@@ -109,19 +113,19 @@ Invalid todo format! Use: todo <desc>.
 ____________________________________________________________
 
 ____________________________________________________________
-Invalid deadline format! Use: deadline <desc> /by <date>
+Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd HH:mm>
 ____________________________________________________________
 
 ____________________________________________________________
-Invalid deadline format! Use: deadline <desc> /by <date>
+Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd HH:mm>
 ____________________________________________________________
 
 ____________________________________________________________
-Invalid event format! Use: event <desc> /from <time> /to <time>
+Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm> /to <yyyy-MM-dd HH:mm>
 ____________________________________________________________
 
 ____________________________________________________________
-Invalid event format! Use: event <desc> /from <time> /to <time>
+Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm> /to <yyyy-MM-dd HH:mm>
 ____________________________________________________________
 
 ____________________________________________________________

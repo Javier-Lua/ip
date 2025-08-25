@@ -1,16 +1,26 @@
-import Task.*;
+import Task.Task;
+import Task.Todo;
+import Task.Deadline;
+import Task.Event;
+
 import enums.TaskType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Milo {
 
     private final static ArrayList<Task> tasks = new ArrayList<>();
+    private final static DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
 
     private static void readFile(String filePath) throws FileNotFoundException, MiloException {
         File f = new File(filePath);
@@ -22,7 +32,7 @@ public class Milo {
                 parts[i] = parts[i].trim();
             }
             Task temp;
-            switch(parts[0]) {
+            switch (parts[0]) {
             case "T":
                 temp = Task.makeTask(TaskType.TODO, parts[2]);
                 if (parts[1].equals("1")) {
@@ -62,7 +72,20 @@ public class Milo {
             }
             fw.close();
         } catch (IOException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+            System.out.println("____________________________________________________________\n" +
+                    "Error saving tasks: " + e.getMessage() + "\n" +
+                    "____________________________________________________________\n");
+        }
+    }
+
+    private static void clearFile(String filePath) {
+        try {
+            FileWriter fw = new FileWriter(filePath);
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("____________________________________________________________\n" +
+                    "Error saving tasks: " + e.getMessage() + "\n" +
+                    "____________________________________________________________\n");
         }
     }
 
@@ -73,7 +96,7 @@ public class Milo {
             Milo.readFile(filePath);
         } catch (FileNotFoundException | MiloException e) {
             System.out.println("____________________________________________________________\n" +
-                    e.getMessage() + "\n" +
+                    "File error: " + e.getMessage() + "\n" +
                     "____________________________________________________________\n");
         }
         Scanner sc = new Scanner(System.in);
@@ -85,7 +108,14 @@ public class Milo {
         input = input.trim();
         while (!input.equals("bye")) {
             try { // Wrap everything in try-catch block in order to catch any Milo Exceptions thrown up
-                if (input.equals("list")) {
+                if (input.equals("reset")) {
+                    clearFile(filePath);
+                    tasks.clear();
+                    Task.resetCount();
+                    System.out.println("____________________________________________________________\n" +
+                            "Okay! Task list has been cleared.\n" +
+                            "____________________________________________________________\n");
+                } else if (input.equals("list")) {
                     String[] list = new String[Task.getCount()]; // copy over tasks descriptions
                     for (int i = 0; i < Task.getCount(); i++) {
                         list[i] = i + 1 + ". " + tasks.get(i).toString();
@@ -154,9 +184,17 @@ public class Milo {
                         String temp = input.substring(9);
                         String[] parts = temp.split("/by");
                         if (parts.length < 2) {
-                            throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <date>");
+                            throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " +
+                                    "HH:mm>");
                         }
-                        t = new Deadline(parts[0].trim(), parts[1].trim());
+                        String dateTime = parts[1].trim();
+                        try {
+                            LocalDateTime deadline = LocalDateTime.parse(dateTime, formatter);
+                            t = new Deadline(parts[0].trim(), deadline);
+                        } catch (DateTimeParseException e) {
+                            throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " +
+                                    "HH:mm>");
+                        }
                     } else if (input.startsWith("event")) {
                         if (input.length() == 5) {
                             throw new MiloException("The description of an event cannot be empty!");
@@ -165,10 +203,19 @@ public class Milo {
                         int fromInd = temp.indexOf("/from");
                         int toInd = temp.indexOf("/to");
                         if (fromInd == -1 || toInd == -1) {
-                            throw new MiloException("Invalid event format! Use: event <desc> /from <time> /to <time>");
+                            throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>" +
+                                    " /to <yyyy-MM-dd HH:mm>");
                         }
-                        t = new Event(temp.substring(0, fromInd).trim(), temp.substring(fromInd + 5, toInd).trim(),
-                                temp.substring(toInd + 3).trim());
+                        String dateTimeFrom = temp.substring(fromInd + 5, toInd).trim();
+                        String dateTimeTo = temp.substring(toInd + 3).trim();
+                        try {
+                            LocalDateTime eventFrom = LocalDateTime.parse(dateTimeFrom, formatter);
+                            LocalDateTime eventTo = LocalDateTime.parse(dateTimeTo, formatter);
+                            t = new Event(temp.substring(0, fromInd).trim(), eventFrom, eventTo);
+                        } catch (DateTimeParseException e) {
+                            throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>" +
+                                    " /to <yyyy-MM-dd HH:mm>");
+                        }
                     } else {
                         throw new MiloException("I'm sorry, I don't know what that means...");
                     }

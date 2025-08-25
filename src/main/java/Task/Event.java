@@ -1,12 +1,17 @@
 package Task;
-import enums.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 public class Event extends Task {
-    private final String from;
-    private final String to;
+    private final static DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm").withResolverStyle(ResolverStyle.STRICT);
+    private final LocalDateTime from;
+    private final LocalDateTime to;
 
-    public Event(String description, String from, String to) {
-        super(description, TaskType.EVENT);
+    public Event(String description, LocalDateTime from, LocalDateTime to) {
+        super(description);
         this.from = from;
         this.to = to;
     }
@@ -15,13 +20,14 @@ public class Event extends Task {
     public String[] getFileInput() {
         String[] s = super.getFileInput();
         s[0] = "E";
-        s[3] = this.from;
-        s[4] = this.to;
+        s[3] = this.from.toString();
+        s[4] = this.to.toString();
         return s;
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + this.from + " to: " + this.to + ")";
+        return "[E]" + super.toString() + " (from: " + this.from.format(formatter) + " to: "
+                + this.to.format(formatter) + ")";
     }
 }
