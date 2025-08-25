@@ -12,7 +12,7 @@ public class Milo {
 
     private final static ArrayList<Task> tasks = new ArrayList<>();
 
-    public static void readFile(String filePath) throws FileNotFoundException, MiloException {
+    private static void readFile(String filePath) throws FileNotFoundException, MiloException {
         File f = new File(filePath);
         Scanner s = new Scanner(f);
         while (s.hasNextLine()) {
@@ -51,10 +51,19 @@ public class Milo {
         s.close();
     }
 
-    public static void writeFile(String filePath, String t) throws IOException {
-        FileWriter fw = new FileWriter(filePath, true);
-        fw.write(t + System.lineSeparator());
-        fw.close();
+    private static void saveTasks(String filePath) {
+        try { // Write back to file
+            // But first, clear contents in file first.
+            FileWriter fw = new FileWriter(filePath);
+            for (int i = 0; i < tasks.size(); i++) {
+                String[] in = tasks.get(i).getFileInput();
+                String res = String.join(" | ", in);
+                fw.write(res + System.lineSeparator());
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
@@ -119,6 +128,7 @@ public class Milo {
                                             "Now you have " + Task.getCount() + " tasks in the list.\n" +
                                             "____________________________________________________________\n");
                                 }
+                                saveTasks(filePath);
                             } else {
                                 throw new MiloException("Number out of range! Task number does not exist.");
                             }
@@ -163,6 +173,7 @@ public class Milo {
                         throw new MiloException("I'm sorry, I don't know what that means...");
                     }
                     tasks.add(t);
+                    saveTasks(filePath);
                     System.out.println("____________________________________________________________\n" +
                             "Got it. I've added this task:\n" +
                             t + "\n" +
@@ -177,21 +188,6 @@ public class Milo {
             input = sc.nextLine();
         }
         sc.close();
-        // Write back to file
-        try {
-            // But first, clear contents in file first.
-            FileWriter clear = new FileWriter(filePath);
-            clear.close();
-            for (int i = 0; i < tasks.size(); i++) {
-                String[] in = tasks.get(i).getFileInput();
-                String res = String.join(" | ", in);
-                Milo.writeFile(filePath, res);
-            }
-        } catch (IOException e) {
-            System.out.println("____________________________________________________________\n" +
-                    e.getMessage() + "\n" +
-                    "____________________________________________________________\n");
-        }
         System.out.println("____________________________________________________________\n" +
                 " Bye. Hope to see you again soon!\n" +
                 "____________________________________________________________\n");
