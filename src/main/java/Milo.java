@@ -88,7 +88,7 @@ public class Milo {
                 if (input.equals("list")) {
                     String[] list = new String[Task.getCount()]; // copy over tasks descriptions
                     for (int i = 0; i < Task.getCount(); i++) {
-                        list[i] = tasks.get(i).getTag() + ". " + tasks.get(i).toString();
+                        list[i] = i + 1 + ". " + tasks.get(i).toString();
                     }
                     System.out.println("____________________________________________________________\n" +
                             "Here are the tasks in your list:\n" +

@@ -59,20 +59,12 @@ public abstract class Task {
         return this.description;
     }
 
-    public int getTag() {
-        return this.tag;
-    }
-
     public String[] getFileInput() {
         return this.fileInput;
     }
 
     public void delete() {
         Task.count -= 1;
-    }
-
-    public TaskType getType() {
-        return this.type;
     }
 
     @Override

@@ -86,10 +86,10 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1. [T][X] Buy groceries
+2. [D][ ] Submit report (by: Sunday)
 3. [D][ ] Submit report (by: Sunday)
-4. [D][ ] Submit report (by: Sunday)
+4. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
 5. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
-6. [E][ ] Project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 
 ____________________________________________________________
