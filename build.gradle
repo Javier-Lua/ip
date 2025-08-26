@@ -1,8 +1,10 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
+
 
 repositories {
     mavenCentral()
@@ -28,7 +30,11 @@ test {
 }
 
 application {
-    mainClass.set("seedu.duke.Duke")
+    mainClass.set("Milo")
+}
+
+checkstyle {
+    toolVersion = '11.0.0'
 }
 
 shadowJar {

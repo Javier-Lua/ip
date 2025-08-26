@@ -14,7 +14,7 @@ public class Milo {
     private static Storage storage;
 
     public static void main(String[] args) {
-        String filePath = args.length > 0 ? args[0] : "./storage/milo.txt";
+        String filePath = args.length > 0 ? args[0] : "./src/main/java/milo.txt";
         // Assuming no more than 100 tasks
         try {
             storage = new Storage(filePath, tasks);
