@@ -1,16 +1,16 @@
+import java.io.FileNotFoundException;
+
 import command.Command;
 import exception.MiloException;
 import logic.Parser;
-import storage.Storage;
 import model.TaskList;
+import storage.Storage;
 import ui.Ui;
-
-import java.io.FileNotFoundException;
 
 public class Milo {
 
-    private final static TaskList tasks = new TaskList();
-    private final static Ui ui = new Ui();
+    private static final TaskList tasks = new TaskList();
+    private static final Ui ui = new Ui();
     private static Storage storage;
 
     public static void main(String[] args) {

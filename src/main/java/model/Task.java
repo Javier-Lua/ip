@@ -1,11 +1,11 @@
 package model;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
 import enums.Status;
 import enums.TaskType;
 import exception.MiloException;
-
-import java.sql.Date;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 
 public abstract class Task {
     private final String description;
@@ -26,19 +26,23 @@ public abstract class Task {
         case TODO:
             return new Todo(desc);
         case DEADLINE:
-            if (dates.length != 1) throw new MiloException("Deadline needs one date!");
+            if (dates.length != 1) {
+                throw new MiloException("Deadline needs one date!");
+            }
             try {
                 return new Deadline(desc, LocalDateTime.parse(dates[0]));
             } catch (DateTimeParseException e) {
                 throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " + "HH:mm>");
             }
         case EVENT:
-            if (dates.length != 2) throw new MiloException("Event needs two dates!");
+            if (dates.length != 2) {
+                throw new MiloException("Event needs two dates!");
+            }
             try {
                 return new Event(desc, LocalDateTime.parse(dates[0]), LocalDateTime.parse(dates[1]));
             } catch (DateTimeParseException e) {
-                throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>" +
-                        " /to <yyyy-MM-dd HH:mm>");
+                throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
+                        + " /to <yyyy-MM-dd HH:mm>");
             }
         default:
             throw new MiloException("Unknown Task Type: " + type);

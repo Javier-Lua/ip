@@ -1,7 +1,7 @@
 package command;
 
-import storage.Storage;
 import model.TaskList;
+import storage.Storage;
 import ui.Ui;
 
 public class ListCommand extends Command {
