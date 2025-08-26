@@ -51,6 +51,22 @@ public class TaskList {
     }
 
     /**
+     * Returns a new TaskList containing all tasks whose
+     * descriptions contain the specified keyword or
+     * phrase.
+     * @param desc Keyword or phrase to search for in task description.
+     * @return TaskList of tasks that contain the specified keyword.
+     */
+    public TaskList filter(String desc) {
+        TaskList res = new TaskList();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(desc)) {
+                res.add(task);
+            }
+        }
+        return res;
+    }
+    /**
      * Clears all tasks from the task list.
      */
     public void clear() {

@@ -2,6 +2,7 @@ package command;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import exception.MiloException;
 import model.TaskList;
@@ -89,6 +90,22 @@ public abstract class Command {
         }
     }
 
+    /**
+     * Returns a Command based on the input string and additional keywords.
+     * If the input is "find", constructs a {@code FindCommand} using the
+     * keywords from the second element onwards.
+     * @param input Input command string.
+     * @param keywords Array of keywords related to the command.
+     * @return Command corresponding to the input and keywords.
+     * @throws MiloException If the input command is not recognized.
+     */
+    public static Command of(String input, String[] keywords) throws MiloException {
+        if (input.equals("find")) {
+            keywords = Arrays.copyOfRange(keywords, 1, keywords.length);
+            return new FindCommand(String.join(" ", keywords));
+        }
+        throw new MiloException("Command not found!");
+    }
     /**
      * Checks if this command is an exit command.
      * @return {@code true} if the command is an instance of {@code ExitCommand}, otherwise {@code false}.

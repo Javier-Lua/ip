@@ -27,4 +27,7 @@ show 2025-12-12
 sort
 list
 list hi
+find Buy
+findBuy
+find
 bye

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.regex.PatternSyntaxException;
 
 import command.Command;
 import exception.MiloException;
@@ -26,7 +27,18 @@ public class Parser {
      * @throws MiloException If the input is invalid or cannot be parsed.
      */
     public static Command parse(String input) throws MiloException {
-        if (input.equals("bye") || input.equals("help") || input.equals("sort")
+        input = input.trim();
+        if (input.startsWith("find")) {
+            try {
+                String[] temp = input.split(" ", 2);
+                if (temp.length == 1) {
+                    throw new MiloException("Invalid find command.");
+                }
+                return Command.of("find", temp);
+            } catch (PatternSyntaxException e) {
+                throw new MiloException("Invalid find command.");
+            }
+        } else if (input.equals("bye") || input.equals("help") || input.equals("sort")
                 || input.equals("reset") || input.equals("list")) {
             return Command.of(input);
         } else if (input.startsWith("show")) {
