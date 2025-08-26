@@ -34,7 +34,7 @@ public class Ui {
     }
 
     public String readCommand() {
-        return sc.nextLine();
+        return sc.nextLine().trim();
     }
 
     public void showList(TaskList res, LocalDate date) {
@@ -130,5 +130,14 @@ public class Ui {
                 "Noted. I've removed this task:\n" + task + "\n" +
                 "Now you have " + count + " tasks in the list.\n" +
                 "____________________________________________________________\n");
+    }
+
+    public void showTaskSearched(TaskList tasks) {
+        System.out.println("____________________________________________________________\n" +
+                "Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.getCount(); i++) {
+            System.out.println(i + 1 + ". " + tasks.getTask(i).toString());
+        }
+        System.out.println("____________________________________________________________\n");
     }
 }

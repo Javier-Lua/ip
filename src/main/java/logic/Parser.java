@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.regex.PatternSyntaxException;
 
 public class Parser {
 
@@ -15,7 +16,18 @@ public class Parser {
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
 
     public static Command parse(String input) throws MiloException {
-        if (input.equals("bye") || input.equals("help") || input.equals("sort") ||
+        input = input.trim();
+        if (input.startsWith("find")) {
+            try {
+                String[] temp = input.split(" ", 2);
+                if (temp.length == 1) {
+                    throw new MiloException("Invalid find command.");
+                }
+                return Command.of("find", temp);
+            } catch (PatternSyntaxException e) {
+                throw new MiloException("Invalid find command.");
+            }
+        } else if (input.equals("bye") || input.equals("help") || input.equals("sort") ||
                 input.equals("reset") || input.equals("list")) {
             return Command.of(input);
         } else if (input.startsWith("show")) {

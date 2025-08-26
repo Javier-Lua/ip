@@ -7,6 +7,7 @@ import ui.Ui;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public abstract class Command {
     public static Command of (String input) throws MiloException {
@@ -49,6 +50,14 @@ public abstract class Command {
         case "event": return new EventCommand(misc, dates[0], dates[1]);
         default: throw new MiloException("Command not found!");
         }
+    }
+
+    public static Command of(String input, String[] keywords) throws MiloException {
+        if (input.equals("find")) {
+            keywords = Arrays.copyOfRange(keywords, 1, keywords.length);
+            return new FindCommand(String.join(" ", keywords));
+        }
+        throw new MiloException("Command not found!");
     }
 
     public boolean isExit() {

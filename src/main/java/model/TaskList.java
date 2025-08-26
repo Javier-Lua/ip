@@ -34,6 +34,16 @@ public class TaskList {
         return res;
     }
 
+    public TaskList filter(String desc) {
+        TaskList res = new TaskList();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(desc)) {
+                res.add(task);
+            }
+        }
+        return res;
+    }
+
     public void clear() {
         tasks.clear();
         count = 0;
