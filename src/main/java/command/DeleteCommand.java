@@ -1,9 +1,9 @@
 package command;
 
-import logic.Storage;
-import logic.TaskList;
-import logic.Ui;
-import task.Task;
+import storage.Storage;
+import model.TaskList;
+import ui.Ui;
+import model.Task;
 
 public class DeleteCommand extends Command {
 

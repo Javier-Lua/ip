@@ -1,7 +1,8 @@
-package logic;
+package storage;
 
 import enums.TaskType;
-import task.Task;
+import ui.Ui;
+import model.Task;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import exception.MiloException;
+import model.TaskList;
 
 public class Storage {
     private final String filePath;

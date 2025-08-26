@@ -1,4 +1,4 @@
-package task;
+package model;
 
 public class Todo extends Task {
     public Todo(String description) {

@@ -1,6 +1,7 @@
-package logic;
+package ui;
 
-import task.Task;
+import model.Task;
+import model.TaskList;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

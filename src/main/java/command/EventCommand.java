@@ -1,10 +1,10 @@
 package command;
 
-import logic.Storage;
-import logic.TaskList;
-import logic.Ui;
-import task.Event;
-import task.Task;
+import storage.Storage;
+import model.TaskList;
+import ui.Ui;
+import model.Event;
+import model.Task;
 
 import java.time.LocalDateTime;
 

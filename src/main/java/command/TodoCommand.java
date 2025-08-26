@@ -1,10 +1,10 @@
 package command;
 
-import logic.Storage;
-import logic.TaskList;
-import logic.Ui;
-import task.Task;
-import task.Todo;
+import storage.Storage;
+import model.TaskList;
+import ui.Ui;
+import model.Task;
+import model.Todo;
 
 public class TodoCommand extends Command {
     private final String misc;

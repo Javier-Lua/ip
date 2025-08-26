@@ -1,9 +1,9 @@
 import command.Command;
 import exception.MiloException;
 import logic.Parser;
-import logic.Storage;
-import logic.TaskList;
-import logic.Ui;
+import storage.Storage;
+import model.TaskList;
+import ui.Ui;
 
 import java.io.FileNotFoundException;
 
@@ -14,7 +14,7 @@ public class Milo {
     private static Storage storage;
 
     public static void main(String[] args) {
-        String filePath = args.length > 0 ? args[0] : "./data/milo.txt";
+        String filePath = args.length > 0 ? args[0] : "./storage/milo.txt";
         // Assuming no more than 100 tasks
         try {
             storage = new Storage(filePath, tasks);
