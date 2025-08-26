@@ -10,17 +10,21 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Milo {
 
     private final static ArrayList<Task> tasks = new ArrayList<>();
-    private final static DateTimeFormatter formatter =
+    private final static DateTimeFormatter dtFormatter =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
+    private final static DateTimeFormatter dFormatter =
+            DateTimeFormatter.ofPattern("MMM dd yyyy").withResolverStyle(ResolverStyle.STRICT);
 
     private static void readFile(String filePath) throws FileNotFoundException, MiloException {
         File f = new File(filePath);
@@ -89,6 +93,24 @@ public class Milo {
         }
     }
 
+    private static void printList(ArrayList<Task> res, LocalDate date) {
+        String[] list = new String[res.size()]; // copy over tasks descriptions
+        for (int i = 0; i < res.size(); i++) {
+            list[i] = i + 1 + ". " + res.get(i).toString();
+        }
+        if (date == null) {
+            System.out.println("____________________________________________________________\n" +
+                    "Here are the tasks in your list:\n" +
+                    String.join("\n", list) + "\n" + // faster than += string concat
+                    "____________________________________________________________\n");
+        } else {
+            System.out.println("____________________________________________________________\n" +
+                    "Here are the tasks in your list for " + date.format(dFormatter) + ":\n" +
+                    String.join("\n", list) + "\n" + // faster than += string concat
+                    "____________________________________________________________\n");
+        }
+    }
+
     public static void main(String[] args) {
         String filePath = args.length > 0 ? args[0] : "./data/milo.txt";
         // Assuming no more than 100 tasks
@@ -103,12 +125,55 @@ public class Milo {
         System.out.println("____________________________________________________________\n" +
                 " Hello! I'm Milo!\n" +
                 " What can I do for you?\n" +
+                " Type 'help' for the list of commands I can understand!\n" +
                 "____________________________________________________________\n");
         String input = sc.nextLine();
         input = input.trim();
         while (!input.equals("bye")) {
             try { // Wrap everything in try-catch block in order to catch any Milo Exceptions thrown up
-                if (input.equals("reset")) {
+                if (input.equals("help")) {
+                    System.out.println("____________________________________________________________\n" +
+                            " show <yyyy-MM-dd> : Shows the list of tasks on the specified day\n" +
+                            " list : Displays list of all tasks\n" +
+                            " sort : Sorts the tasks in chronological order\n" +
+                            " reset : Resets list of tasks\n" +
+                            " mark/unmark <number> : Marks given task as done/undone\n" +
+                            " delete <number> : Deletes given task\n" +
+                            " todo <desc> : Creates a task with no specified date.\n" +
+                            " deadline <desc> /by <yyyy-MM-dd> : Creates a task with a deadline\n" +
+                            " event <desc> /from <yyyy-MM-dd> /to <yyyy-MM-dd>: Creates an event\n" +
+                            " bye : Closes the chatbot\n" +
+                            "____________________________________________________________\n");
+                } else if (input.startsWith("show")) {
+                    String[] temp = input.split(" ");
+                    if (temp.length != 2) {
+                        throw new MiloException("Invalid show command. Use: show <yyyy-MM-dd>");
+                    } else {
+                        try {
+                            LocalDate reqDate = LocalDate.parse(temp[1]);
+                            ArrayList<Task> res = new ArrayList<>();
+                            for (Task task : tasks) {
+                                LocalDateTime taskDateTime = task.getDateTime();
+                                if (taskDateTime != null) {
+                                    LocalDate taskDate = taskDateTime.toLocalDate();
+                                    if (taskDate.equals(reqDate)) {
+                                        res.add(task);
+                                    }
+                                }
+                            }
+                            printList(res, reqDate);
+                        } catch (DateTimeParseException e) {
+                            throw new MiloException("Invalid show command. Use: show <yyyy-MM-dd>");
+                        }
+                    }
+                } else if (input.equals("sort")) {
+                    tasks.sort(Comparator.comparing(
+                            t -> t.getDateTime() != null ? t.getDateTime() : LocalDateTime.MAX
+                    ));
+                    System.out.println("____________________________________________________________\n" +
+                            "Okay! Task list has been sorted chronologically!\n" +
+                            "____________________________________________________________\n");
+                } else if (input.equals("reset")) {
                     clearFile(filePath);
                     tasks.clear();
                     Task.resetCount();
@@ -116,14 +181,7 @@ public class Milo {
                             "Okay! Task list has been cleared.\n" +
                             "____________________________________________________________\n");
                 } else if (input.equals("list")) {
-                    String[] list = new String[Task.getCount()]; // copy over tasks descriptions
-                    for (int i = 0; i < Task.getCount(); i++) {
-                        list[i] = i + 1 + ". " + tasks.get(i).toString();
-                    }
-                    System.out.println("____________________________________________________________\n" +
-                            "Here are the tasks in your list:\n" +
-                            String.join("\n", list) + "\n" + // faster than += string concat
-                            "____________________________________________________________\n");
+                    printList(tasks, null);
                 } else if (input.startsWith("mark") || input.startsWith("unmark") || input.startsWith("delete")) {
                     String[] parts = input.split(" "); // split when encounter spacing
                     if (!input.contains(" ")) {
@@ -189,7 +247,7 @@ public class Milo {
                         }
                         String dateTime = parts[1].trim();
                         try {
-                            LocalDateTime deadline = LocalDateTime.parse(dateTime, formatter);
+                            LocalDateTime deadline = LocalDateTime.parse(dateTime, dtFormatter);
                             t = new Deadline(parts[0].trim(), deadline);
                         } catch (DateTimeParseException e) {
                             throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " +
@@ -209,8 +267,8 @@ public class Milo {
                         String dateTimeFrom = temp.substring(fromInd + 5, toInd).trim();
                         String dateTimeTo = temp.substring(toInd + 3).trim();
                         try {
-                            LocalDateTime eventFrom = LocalDateTime.parse(dateTimeFrom, formatter);
-                            LocalDateTime eventTo = LocalDateTime.parse(dateTimeTo, formatter);
+                            LocalDateTime eventFrom = LocalDateTime.parse(dateTimeFrom, dtFormatter);
+                            LocalDateTime eventTo = LocalDateTime.parse(dateTimeTo, dtFormatter);
                             t = new Event(temp.substring(0, fromInd).trim(), eventFrom, eventTo);
                         } catch (DateTimeParseException e) {
                             throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>" +

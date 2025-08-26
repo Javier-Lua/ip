@@ -14,12 +14,21 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    public LocalDateTime getBy() {
+        return this.by;
+    }
+
     @Override
     public String[] getFileInput() {
         String[] s = super.getFileInput();
         s[0] = "D";
         s[3] = this.by.toString();
         return s;
+    }
+
+    @Override
+    public LocalDateTime getDateTime() {
+        return this.by;
     }
 
     @Override

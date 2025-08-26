@@ -1,10 +1,10 @@
 reset
 todo Buy groceries
 todo Clean room
-deadline Submit report /by 2025-12-12 18:00
-deadline Submit report/by2025-12-12 18:00
-event Project meeting /from 2025-12-12 18:00 /to 2025-12-12 22:00
-event Project meeting/from2025-12-12 18:00/to2025-12-12 22:00
+deadline Submit report /by 2025-12-12 12:00
+deadline Submit report/by2025-12-12 11:00
+event Project meeting /from 2025-12-12 15:00 /to 2025-12-12 22:00
+event Project meeting/from2025-12-12 19:00/to2025-12-12 22:00
 list
 mark 1
 mark 2
@@ -23,4 +23,8 @@ deadlinedajsbdjl
 deadline hi
 eventa dwnawldnn
 event hi
+show 2025-12-12
+sort
+list
+list hi
 bye

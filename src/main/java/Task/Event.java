@@ -26,6 +26,11 @@ public class Event extends Task {
     }
 
     @Override
+    public LocalDateTime getDateTime() {
+        return this.from;
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + this.from.format(formatter) + " to: "
                 + this.to.format(formatter) + ")";

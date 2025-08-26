@@ -70,6 +70,10 @@ public abstract class Task {
         Task.count = 0;
     }
 
+    public LocalDateTime getDateTime() {
+        return null;
+    }
+
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.getDescription();
