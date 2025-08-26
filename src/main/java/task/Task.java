@@ -1,4 +1,4 @@
-package Task;
+package task;
 import enums.Status;
 import enums.TaskType;
 
@@ -7,13 +7,11 @@ import java.time.LocalDateTime;
 public abstract class Task {
     private final String description;
     private Status status;
-    private static int count = 0;
     private final String[] fileInput;
 
     public Task(String description) {
         this.description = description;
         this.status = Status.NOT_DONE;
-        Task.count += 1;
         this.fileInput = new String[] {"", "0", this.description, "", ""};
     }
 
@@ -30,10 +28,6 @@ public abstract class Task {
         default:
             throw new IllegalArgumentException("Unknown Task Type: " + type);
         }
-    }
-
-    public static int getCount() {
-        return Task.count;
     }
 
     public String getStatusIcon() {
@@ -60,14 +54,6 @@ public abstract class Task {
 
     public String[] getFileInput() {
         return this.fileInput;
-    }
-
-    public void delete() {
-        Task.count -= 1;
-    }
-
-    public static void resetCount() {
-        Task.count = 0;
     }
 
     public LocalDateTime getDateTime() {

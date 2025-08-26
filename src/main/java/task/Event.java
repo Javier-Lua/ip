@@ -1,39 +1,38 @@
-package Task;
+package task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 
-public class Deadline extends Task {
+public class Event extends Task {
     private final static DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm").withResolverStyle(ResolverStyle.STRICT);
-    private final LocalDateTime by;
+    private final LocalDateTime from;
+    private final LocalDateTime to;
 
-    public Deadline(String description, LocalDateTime by) {
+    public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
-        this.by = by;
-    }
-
-    public LocalDateTime getBy() {
-        return this.by;
+        this.from = from;
+        this.to = to;
     }
 
     @Override
     public String[] getFileInput() {
         String[] s = super.getFileInput();
-        s[0] = "D";
-        s[3] = this.by.toString();
+        s[0] = "E";
+        s[3] = this.from.toString();
+        s[4] = this.to.toString();
         return s;
     }
 
     @Override
     public LocalDateTime getDateTime() {
-        return this.by;
+        return this.from;
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + this.by.format(formatter) + ")";
+        return "[E]" + super.toString() + " (from: " + this.from.format(formatter) + " to: "
+                + this.to.format(formatter) + ")";
     }
 }
-
