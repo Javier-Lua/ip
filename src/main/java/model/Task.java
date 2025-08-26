@@ -7,17 +7,34 @@ import enums.Status;
 import enums.TaskType;
 import exception.MiloException;
 
+/**
+ * Represents a general task with a description and completion status.
+ * Can be extended for specific task types such as {@code Deadline}, {@code Event} or {@code Todo}.
+ */
 public abstract class Task {
     private final String description;
     private Status status;
     private final String[] fileInput;
 
+    /**
+     * Constructs a {@code Task} with the specified description.
+     * Initially, the task is marked as not done.
+     * @param description Description of the task.
+     */
     public Task(String description) {
         this.description = description;
         this.status = Status.NOT_DONE;
         this.fileInput = new String[] {"", "0", this.description, "", ""};
     }
 
+    /**
+     * Creates a {@code Task} of the specified type with a description and optional dates.
+     * @param type Type of the task ({@code DEADLINE}, {@code EVENT}, {@code TODO}.
+     * @param desc Description of the task.
+     * @param dates Optional date(s) depending on the task type.
+     * @return Constructed {@code Task} object.
+     * @throws MiloException If task type is unknown, description is empty, or dates are invalid.
+     */
     public static Task makeTask(TaskType type, String desc, String... dates) throws MiloException {
         if (desc == null || desc.isBlank()) {
             throw new MiloException("Task description cannot be empty");
@@ -49,6 +66,10 @@ public abstract class Task {
         }
     }
 
+    /**
+     * Returns a string representing the task's completion status icon.
+     * @return "X" if done, otherwise a blank space.
+     */
     public String getStatusIcon() {
         if (this.status == Status.DONE) {
             return "X"; // mark done task with X
@@ -57,32 +78,59 @@ public abstract class Task {
         }
     }
 
+    /**
+     * Marks the task as done and updates its file input representation.
+     */
     public void markAsDone() {
         this.status = Status.DONE;
         this.fileInput[1] = "1";
     }
 
+    /**
+     * Marks the task as not done and updates its file input representation.
+     */
     public void markAsUndone() {
         this.status = Status.NOT_DONE;
         this.fileInput[1] = "0";
     }
 
+    /**
+     * Checks if the task is done.
+     * @return true if the task is marked as done, false otherwise.
+     */
     public boolean isDone() {
         return this.status == Status.DONE;
     }
 
+    /**
+     * Returns the description of the task.
+     * @return Task description.
+     */
     public String getDescription() {
         return this.description;
     }
 
+    /**
+     * Returns the string array representaion of the task for file storage.
+     * @return File input representation of the task.
+     */
     public String[] getFileInput() {
         return this.fileInput;
     }
 
+    /**
+     * Returns the main date and time associated with the task.
+     * Can be overridden by subclasses like {@code Deadline} or {@code Event}.
+     * @return LocalDateTime of the task, or null if not applicable.
+     */
     public LocalDateTime getDateTime() {
         return null;
     }
 
+    /**
+     * Returns a string representation of the task, including status and description.
+     * @return Formatted string representing the task.
+     */
     @Override
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.getDescription();
