@@ -111,7 +111,7 @@ public abstract class Task {
     }
 
     /**
-     * Returns the string array representaion of the task for file storage.
+     * Returns the string array representation of the task for file storage.
      * @return File input representation of the task.
      */
     public String[] getFileInput() {

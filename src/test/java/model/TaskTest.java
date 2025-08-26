@@ -53,7 +53,7 @@ public class TaskTest {
         Task event = Task.makeTask(TaskType.EVENT, "Project meeting", start, end);
         assertEquals("Project meeting", event.getDescription());
         assertFalse(event.isDone());
-        assertEquals(LocalDateTime.parse(start), ((model.Event) event).getDateTime());
+        assertEquals(LocalDateTime.parse(start), (event).getDateTime());
         assertEquals(LocalDateTime.parse(end), ((model.Event) event).getDateTimeTo());
     }
 }

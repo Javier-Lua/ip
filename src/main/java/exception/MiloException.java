@@ -8,7 +8,7 @@ package exception;
 public class MiloException extends Exception {
     /**
      * Constructs a {@code MiloException} with the specified detail message.
-     * @param message
+     * @param message Description of the error.
      */
     public MiloException(String message) {
         super(message);
