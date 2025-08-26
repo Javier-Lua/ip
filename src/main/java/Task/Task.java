@@ -1,20 +1,19 @@
 package Task;
-import enums.*;
+import enums.Status;
+import enums.TaskType;
+
+import java.time.LocalDateTime;
 
 public abstract class Task {
     private final String description;
     private Status status;
-    private final int tag;
     private static int count = 0;
-    private final TaskType type;
     private final String[] fileInput;
 
-    public Task(String description, TaskType type) {
+    public Task(String description) {
         this.description = description;
         this.status = Status.NOT_DONE;
         Task.count += 1;
-        this.tag = Task.count;
-        this.type = type;
         this.fileInput = new String[] {"", "0", this.description, "", ""};
     }
 
@@ -24,10 +23,10 @@ public abstract class Task {
             return new Todo(desc);
         case DEADLINE:
             if (dates.length != 1) throw new IllegalArgumentException("Deadline needs one date!");
-            return new Deadline(desc, dates[0]);
+            return new Deadline(desc, LocalDateTime.parse(dates[0]));
         case EVENT:
             if (dates.length != 2) throw new IllegalArgumentException("Event needs two dates!");
-            return new Event(desc, dates[0], dates[1]);
+            return new Event(desc, LocalDateTime.parse(dates[0]), LocalDateTime.parse(dates[1]));
         default:
             throw new IllegalArgumentException("Unknown Task Type: " + type);
         }
@@ -59,10 +58,6 @@ public abstract class Task {
         return this.description;
     }
 
-    public int getTag() {
-        return this.tag;
-    }
-
     public String[] getFileInput() {
         return this.fileInput;
     }
@@ -71,8 +66,12 @@ public abstract class Task {
         Task.count -= 1;
     }
 
-    public TaskType getType() {
-        return this.type;
+    public static void resetCount() {
+        Task.count = 0;
+    }
+
+    public LocalDateTime getDateTime() {
+        return null;
     }
 
     @Override
