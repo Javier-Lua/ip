@@ -1,12 +1,12 @@
 package command;
 
-import storage.Storage;
-import model.TaskList;
-import ui.Ui;
+import java.time.LocalDateTime;
+
 import model.Event;
 import model.Task;
-
-import java.time.LocalDateTime;
+import model.TaskList;
+import storage.Storage;
+import ui.Ui;
 
 public class EventCommand extends Command {
 

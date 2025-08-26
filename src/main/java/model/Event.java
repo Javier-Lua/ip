@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 
 public class Event extends Task {
-    private final static DateTimeFormatter formatter =
+    private static final DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm").withResolverStyle(ResolverStyle.STRICT);
     private final LocalDateTime from;
     private final LocalDateTime to;

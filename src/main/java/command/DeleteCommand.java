@@ -1,9 +1,9 @@
 package command;
 
-import storage.Storage;
-import model.TaskList;
-import ui.Ui;
 import model.Task;
+import model.TaskList;
+import storage.Storage;
+import ui.Ui;
 
 public class DeleteCommand extends Command {
 

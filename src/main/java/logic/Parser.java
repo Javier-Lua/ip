@@ -1,17 +1,17 @@
 package logic;
 
-import command.Command;
-import exception.MiloException;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
+import command.Command;
+import exception.MiloException;
+
 public class Parser {
 
-    private final static DateTimeFormatter dtFormatter =
+    private static final DateTimeFormatter dtFormatter =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
 
     public static Command parse(String input) throws MiloException {
@@ -33,8 +33,8 @@ public class Parser {
         } else if (input.startsWith("mark") || input.startsWith("unmark") || input.startsWith("delete")) {
             String[] parts = input.split(" "); // split when encounter spacing
             if (!input.contains(" ")) {
-                throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark <number> " +
-                        "or delete <number>.");
+                throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark <number> "
+                        + "or delete <number>.");
             }
             if (parts.length == 2) {
                 try {
@@ -51,8 +51,8 @@ public class Parser {
                         throw new MiloException("Number out of range! Task number does not exist.");
                     }
                 } catch (NumberFormatException e) {
-                    throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark " +
-                            "<number> or delete <number>.");
+                    throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark "
+                            + "<number> or delete <number>.");
                 }
             }
         } else {
@@ -71,16 +71,16 @@ public class Parser {
                 String temp = input.substring(9);
                 String[] parts = temp.split("/by");
                 if (parts.length < 2) {
-                    throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " +
-                            "HH:mm>");
+                    throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd "
+                            + "HH:mm>");
                 }
                 String dateTime = parts[1].trim();
                 try {
                     LocalDateTime deadline = LocalDateTime.parse(dateTime, dtFormatter);
                     return Command.of("deadline", parts[0].trim(), deadline);
                 } catch (DateTimeParseException e) {
-                    throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " +
-                            "HH:mm>");
+                    throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd "
+                            + "HH:mm>");
                 }
             } else if (input.startsWith("event")) {
                 if (input.length() == 5) {
@@ -90,8 +90,8 @@ public class Parser {
                 int fromInd = temp.indexOf("/from");
                 int toInd = temp.indexOf("/to");
                 if (fromInd == -1 || toInd == -1) {
-                    throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>" +
-                            " /to <yyyy-MM-dd HH:mm>");
+                    throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
+                            + " /to <yyyy-MM-dd HH:mm>");
                 }
                 String dateTimeFrom = temp.substring(fromInd + 5, toInd).trim();
                 String dateTimeTo = temp.substring(toInd + 3).trim();
@@ -100,8 +100,8 @@ public class Parser {
                     LocalDateTime eventTo = LocalDateTime.parse(dateTimeTo, dtFormatter);
                     return Command.of("event", temp.substring(0, fromInd).trim(), eventFrom, eventTo);
                 } catch (DateTimeParseException e) {
-                    throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>" +
-                            " /to <yyyy-MM-dd HH:mm>");
+                    throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
+                            + " /to <yyyy-MM-dd HH:mm>");
                 }
             }
         }
