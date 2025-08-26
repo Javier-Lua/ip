@@ -9,11 +9,22 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
+/**
+ * Provides parsing functionality for user input commands.
+ * Converts string input into corresponding Command objects.
+ */
 public class Parser {
 
     private final static DateTimeFormatter dtFormatter =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
 
+    /**
+     * Parses the given user input and returns the corresponding Command object.
+     * Throws MiloException if the input is invalid or cannot be converted to a valid command.
+     * @param input User input string to parse.
+     * @return Corresponding Command object for the input.
+     * @throws MiloException If the input is invalid or cannot be parsed.
+     */
     public static Command parse(String input) throws MiloException {
         if (input.equals("bye") || input.equals("help") || input.equals("sort") ||
                 input.equals("reset") || input.equals("list")) {

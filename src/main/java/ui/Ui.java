@@ -8,16 +8,26 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
+/**
+ * Handles user interaction with the chatbot.
+ * Provides methods to display messages, read input, and show task-related updates.
+ */
 public class Ui {
 
     private final Scanner sc;
     private final static DateTimeFormatter dFormatter =
             DateTimeFormatter.ofPattern("MMM dd yyyy").withResolverStyle(ResolverStyle.STRICT);
 
+    /**
+     * Constructs a Ui object with a Scanner for reading user input.
+     */
     public Ui() {
         this.sc = new Scanner(System.in);
     }
 
+    /**
+     * Displays the welcome message when the chatbot starts.
+     */
     public void showWelcome() {
         System.out.println("____________________________________________________________\n" +
                 " Hello! I'm Milo!\n" +
@@ -26,6 +36,9 @@ public class Ui {
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays the goodbye message and closes the scanner.
+     */
     public void showGoodbye() {
         System.out.println("____________________________________________________________\n" +
                 " Bye. Hope to see you again soon!\n" +
@@ -33,10 +46,20 @@ public class Ui {
         this.sc.close();
     }
 
+    /**
+     * Reads the next line of user input.
+     * @return User input as a String.
+     */
     public String readCommand() {
         return sc.nextLine();
     }
 
+    /**
+     * Displays a list of tasks, optionally filtered by a specific date.
+     * Note the TaskList cannot be filtered using this method.
+     * @param res TaskList containing the tasks to display.
+     * @param date Date to display the date to the user.
+     */
     public void showList(TaskList res, LocalDate date) {
         if (date == null) {
             System.out.println("____________________________________________________________\n" +
@@ -51,6 +74,9 @@ public class Ui {
         System.out.println("____________________________________________________________\n");
     }
 
+    /**
+     * Displays a list of supported commands and their usage.
+     */
     public void showHelp() {
         System.out.println("____________________________________________________________\n" +
                 " show <yyyy-MM-dd> : Shows the list of tasks on the specified day\n" +
@@ -66,28 +92,41 @@ public class Ui {
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays an error message for general exceptions.
+     * @param e Exception to display.
+     */
     public void showError(Exception e) {
         System.out.println("____________________________________________________________\n" +
                 e.getMessage() + "\n" +
                 "____________________________________________________________\n");
     }
 
-    public void showLine() {
-        System.out.println("____________________________________________________________\n");
-    }
-
+    /**
+     * Displays an error message when saving tasks fails.
+     * @param e Exception containing error details.
+     */
     public void showTaskError(Exception e) {
         System.out.println("____________________________________________________________\n" +
                 "Error saving tasks: " + e.getMessage() + "\n" +
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays an error message when file-related operations fail.
+     * @param e Exception containing error details.
+     */
     public void showFileError(Exception e) {
         System.out.println("____________________________________________________________\n" +
                 "File error: " + e.getMessage() + "\n" +
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays a message when a task is added to the list.
+     * @param task Task that was added.
+     * @param count Current number of tasks in the list.
+     */
     public void showAddTask(Task task, int count) {
         System.out.println("____________________________________________________________\n" +
                 "Got it. I've added this task:\n" +
@@ -96,18 +135,28 @@ public class Ui {
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays a message when the task list has been sorted.
+     */
     public void showTaskSorted() {
         System.out.println("____________________________________________________________\n" +
                 "Okay! Task list has been sorted chronologically!\n" +
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays a message when the task list has been cleared.
+     */
     public void showTaskCleared() {
         System.out.println("____________________________________________________________\n" +
                 "Okay! Task list has been cleared.\n" +
                 "____________________________________________________________\n");
     }
 
+    /**
+     * Displays a message when a task is marked as done.
+     * @param task Task that was marked.
+     */
     public void showTaskMarked(Task task) {
         System.out.println("____________________________________________________________" +
                 "\n" +
@@ -116,6 +165,10 @@ public class Ui {
                 "\n" + "____________________________________________________________");
     }
 
+    /**
+     * Displays a message when a task is marked as not done.
+     * @param task Task that was unmarked.
+     */
     public void showTaskUnmarked(Task task) {
         System.out.println("____________________________________________________________" +
                 "\n" +
@@ -124,6 +177,11 @@ public class Ui {
                 "\n" + "____________________________________________________________");
     }
 
+    /**
+     * Displays a message when a task is removed from the list
+     * @param task Task that was removed.
+     * @param count Current number of tasks in the list.
+     */
     public void showTaskRemoved(Task task, int count) {
         System.out.println("____________________________________________________________" +
                 "\n" +
