@@ -1,8 +1,8 @@
 package command;
 
-import logic.Storage;
-import logic.TaskList;
-import logic.Ui;
+import storage.Storage;
+import model.TaskList;
+import ui.Ui;
 
 public class UnmarkCommand extends Command {
     private final int num;

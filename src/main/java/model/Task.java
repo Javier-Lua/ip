@@ -1,4 +1,4 @@
-package task;
+package model;
 import enums.Status;
 import enums.TaskType;
 

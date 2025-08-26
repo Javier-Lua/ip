@@ -1,9 +1,9 @@
 package command;
 
 import exception.MiloException;
-import logic.Storage;
-import logic.TaskList;
-import logic.Ui;
+import storage.Storage;
+import model.TaskList;
+import ui.Ui;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
