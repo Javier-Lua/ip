@@ -19,7 +19,6 @@ import ui.Ui;
  */
 public class Storage {
     private final String filePath;
-    private final File f;
     private final Scanner s;
     private final TaskList tasks;
     private final Ui ui = new Ui();
@@ -32,8 +31,7 @@ public class Storage {
      * @throws FileNotFoundException If the specified file does not exist.
      */
     public Storage(String filePath, TaskList tasks) throws FileNotFoundException {
-        this.f = new File(filePath);
-        this.s = new Scanner(f);
+        this.s = new Scanner(new File(filePath));
         this.filePath = filePath;
         this.tasks = tasks;
     }

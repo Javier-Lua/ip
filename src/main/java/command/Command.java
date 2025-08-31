@@ -23,14 +23,14 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input) throws MiloException {
-        switch (input) {
-        case "bye": return new ExitCommand();
-        case "help": return new HelpCommand();
-        case "sort": return new SortCommand();
-        case "reset": return new ResetCommand();
-        case "list": return new ListCommand();
-        default: throw new MiloException("Command not found!");
-        }
+        return switch (input) {
+        case "bye" -> new ExitCommand();
+        case "help" -> new HelpCommand();
+        case "sort" -> new SortCommand();
+        case "reset" -> new ResetCommand();
+        case "list" -> new ListCommand();
+        default -> throw new MiloException("Command not found!");
+        };
     }
     /**
      * Returns a command instance based on a keyword input and a task index.
@@ -40,12 +40,12 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, int num) throws MiloException {
-        switch (input) {
-        case "mark": return new MarkCommand(num);
-        case "unmark": return new UnmarkCommand(num);
-        case "delete": return new DeleteCommand(num);
-        default: throw new MiloException("Command not found!");
-        }
+        return switch (input) {
+        case "mark" -> new MarkCommand(num);
+        case "unmark" -> new UnmarkCommand(num);
+        case "delete" -> new DeleteCommand(num);
+        default -> throw new MiloException("Command not found!");
+        };
     }
     /**
      * Returns a command instance based on a keyword input and a date.
@@ -83,11 +83,11 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command or if required dates are missing.
      */
     public static Command of(String input, String misc, LocalDateTime... dates) throws MiloException {
-        switch (input) {
-        case "deadline": return new DeadlineCommand(misc, dates[0]);
-        case "event": return new EventCommand(misc, dates[0], dates[1]);
-        default: throw new MiloException("Command not found!");
-        }
+        return switch (input) {
+        case "deadline" -> new DeadlineCommand(misc, dates[0]);
+        case "event" -> new EventCommand(misc, dates[0], dates[1]);
+        default -> throw new MiloException("Command not found!");
+        };
     }
 
     /**

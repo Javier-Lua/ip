@@ -11,14 +11,12 @@ import java.util.Comparator;
  */
 public class TaskList {
     private final ArrayList<Task> tasks;
-    private int count;
 
     /**
      * Constructs an empty TaskList.
      */
     public TaskList() {
-        this.tasks = new ArrayList<Task>();
-        this.count = 0;
+        this.tasks = new ArrayList<>();
     }
 
     /**
@@ -71,7 +69,6 @@ public class TaskList {
      */
     public void clear() {
         tasks.clear();
-        count = 0;
     }
 
     /**
