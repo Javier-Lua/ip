@@ -93,7 +93,7 @@ public class Storage {
             }
             fw.close();
         } catch (IOException e) {
-            ui.showTaskError(e);
+            System.out.println(ui.showTaskError(e));
         }
     }
 
@@ -106,7 +106,7 @@ public class Storage {
             FileWriter fw = new FileWriter(filePath);
             fw.close();
         } catch (IOException e) {
-            ui.showTaskError(e);
+            System.out.println(ui.showTaskError(e));
         }
     }
 }

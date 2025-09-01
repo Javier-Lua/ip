@@ -1,5 +1,6 @@
 package command;
 
+import exception.MiloException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -26,13 +27,16 @@ public class MarkCommand extends Command {
      * @param tasks The task list to operate on.
      * @param ui The user interface for displaying results.
      * @param storage The storage handler for saving changes.
+     * @return String output message to the user after executing command.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public String execute(TaskList tasks, Ui ui, Storage storage) {
         if (num <= tasks.getCount()) {
             tasks.mark(num - 1);
-            ui.showTaskMarked(tasks.getTask(num - 1));
             storage.saveTasks();
+            return ui.showTaskMarked(tasks.getTask(num - 1));
+        } else {
+            return ui.showError(new MiloException("Task number out of range!"));
         }
     }
 }

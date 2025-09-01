@@ -1,5 +1,6 @@
 package command;
 
+import exception.MiloException;
 import model.Task;
 import model.TaskList;
 import storage.Storage;
@@ -27,14 +28,17 @@ public class DeleteCommand extends Command {
      * @param tasks The task list to operate on.
      * @param ui The user interface for displaying results.
      * @param storage The storage handler for saving changes.
+     * @return String output message to the user after executing command.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public String execute(TaskList tasks, Ui ui, Storage storage) {
         if (num <= tasks.getCount()) {
             Task temp = tasks.getTask(num - 1);
             tasks.delete(num - 1);
-            ui.showTaskRemoved(temp, tasks.getCount());
             storage.saveTasks();
+            return ui.showTaskRemoved(temp, tasks.getCount());
+        } else {
+            return ui.showError(new MiloException("Task number out of range!"));
         }
     }
 }
