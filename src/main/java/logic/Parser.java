@@ -27,6 +27,7 @@ public class Parser {
      * @throws MiloException If the input is invalid or cannot be parsed.
      */
     public static Command parse(String input) throws MiloException {
+        assert input != null : "Input string cannot be null";
         input = input.trim();
         if (input.startsWith("find")) {
             try {
@@ -62,7 +63,7 @@ public class Parser {
             if (parts.length == 2) {
                 try {
                     int num = Integer.parseInt(parts[1]);
-                    if (/*num <= tasks.getCount()*/num > 0) {
+                    if (num > 0) {
                         if (input.startsWith("mark")) {
                             return Command.of("mark", num);
                         } else if (input.startsWith("unmark")) {

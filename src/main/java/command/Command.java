@@ -23,6 +23,7 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input) throws MiloException {
+        assert input != null : "Input string cannot be null";
         return switch (input) {
         case "bye" -> new ExitCommand();
         case "help" -> new HelpCommand();
@@ -40,6 +41,8 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, int num) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert num > 0 : "Task index must be positive";
         return switch (input) {
         case "mark" -> new MarkCommand(num);
         case "unmark" -> new UnmarkCommand(num);
@@ -55,6 +58,8 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, LocalDate date) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert date != null : "Date cannot be null";
         if (input.equals("show")) {
             return new ShowCommand(date);
         }
@@ -68,6 +73,9 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, String misc) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert misc != null : "Description cannot be null";
+        assert !misc.isEmpty() : "Description cannot be empty";
         if (input.equals("todo")) {
             return new TodoCommand(misc);
         }
@@ -83,6 +91,9 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command or if required dates are missing.
      */
     public static Command of(String input, String misc, LocalDateTime... dates) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert misc != null : "Description cannot be null";
+        assert !misc.isEmpty() : "Description cannot be empty";
         return switch (input) {
         case "deadline" -> new DeadlineCommand(misc, dates[0]);
         case "event" -> new EventCommand(misc, dates[0], dates[1]);
@@ -100,6 +111,8 @@ public abstract class Command {
      * @throws MiloException If the input command is not recognized.
      */
     public static Command of(String input, String[] keywords) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert keywords != null : "Keywords array cannot be null";
         if (input.equals("find")) {
             keywords = Arrays.copyOfRange(keywords, 1, keywords.length);
             return new FindCommand(String.join(" ", keywords));
