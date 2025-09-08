@@ -29,7 +29,7 @@ public class Milo {
     public Milo(String filePath) throws FileNotFoundException, MiloException {
         this.tasks = new TaskList();
         this.ui = new Ui();
-        this.storage = new Storage(filePath, tasks);
+        this.storage = new Storage(filePath, tasks, ui);
         assert tasks != null : "TaskList should be initialized";
         assert ui != null : "Ui should be initialized";
         assert storage != null : "Storage should be initialized";

@@ -16,9 +16,22 @@ import exception.MiloException;
  */
 public class Parser {
 
-    private static final DateTimeFormatter dtFormatter =
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
-
+    private static final String ERROR_INVALID_COMMAND = "I'm sorry, I don't know what that means...";
+    private static final String ERROR_INVALID_FIND = "Invalid find command.";
+    private static final String ERROR_INVALID_SHOW = "Invalid show command. Use: show <yyyy-MM-dd>";
+    private static final String ERROR_INVALID_MARK_UNMARK_DELETE = "Invalid mark/delete command. "
+            + "Use: mark <number> or unmark <number> or delete <number>.";
+    private static final String ERROR_NUMBER_OUT_OF_RANGE = "Number out of range! Task number does not exist.";
+    private static final String ERROR_TODO_EMPTY_DESCRIPTION = "The description of a todo cannot be empty!";
+    private static final String ERROR_TODO_FORMAT = "Invalid todo format! Use: todo <desc>.";
+    private static final String ERROR_DEADLINE_EMPTY_DESCRIPTION = "The description of a deadline cannot be empty!";
+    private static final String ERROR_DEADLINE_FORMAT = "Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd "
+            + "HH:mm>";
+    private static final String ERROR_EVENT_EMPTY_DESCRIPTION = "The description of an event cannot be empty!";
+    private static final String ERROR_EVENT_FORMAT = "Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
+            + " /to <yyyy-MM-dd HH:mm>";
     /**
      * Parses the given user input and returns the corresponding Command object.
      * Throws MiloException if the input is invalid or cannot be converted to a valid command.
@@ -28,107 +41,194 @@ public class Parser {
      */
     public static Command parse(String input) throws MiloException {
         assert input != null : "Input string cannot be null";
-        input = input.trim();
-        if (input.startsWith("find")) {
-            try {
-                String[] temp = input.split(" ", 2);
-                if (temp.length == 1) {
-                    throw new MiloException("Invalid find command.");
-                }
-                return Command.of("find", temp);
-            } catch (PatternSyntaxException e) {
-                throw new MiloException("Invalid find command.");
-            }
-        } else if (input.equals("bye") || input.equals("help") || input.equals("sort")
-                || input.equals("reset") || input.equals("list")) {
-            return Command.of(input);
-        } else if (input.startsWith("show")) {
-            String[] temp = input.split(" ");
-            if (temp.length != 2) {
-                throw new MiloException("Invalid show command. Use: show <yyyy-MM-dd>");
-            } else {
-                try {
-                    LocalDate reqDate = LocalDate.parse(temp[1]);
-                    return Command.of("show", reqDate);
-                } catch (DateTimeParseException e) {
-                    throw new MiloException("Invalid show command. Use: show <yyyy-MM-dd>");
-                }
-            }
-        } else if (input.startsWith("mark") || input.startsWith("unmark") || input.startsWith("delete")) {
-            String[] parts = input.split(" "); // split when encounter spacing
-            if (!input.contains(" ")) {
-                throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark <number> "
-                        + "or delete <number>.");
-            }
-            if (parts.length == 2) {
-                try {
-                    int num = Integer.parseInt(parts[1]);
-                    if (num > 0) {
-                        if (input.startsWith("mark")) {
-                            return Command.of("mark", num);
-                        } else if (input.startsWith("unmark")) {
-                            return Command.of("unmark", num);
-                        } else {
-                            return Command.of("delete", num);
-                        }
-                    } else {
-                        throw new MiloException("Number out of range! Task number does not exist.");
-                    }
-                } catch (NumberFormatException e) {
-                    throw new MiloException("Invalid mark/delete command. Use: mark <number> or unmark "
-                            + "<number> or delete <number>.");
-                }
-            }
-        } else {
-            if (input.startsWith("todo")) {
-                if (input.length() <= 5) {
-                    throw new MiloException("The description of a todo cannot be empty!");
-                }
-                if (input.charAt(4) != ' ') {
-                    throw new MiloException("Invalid todo format! Use: todo <desc>.");
-                }
-                return Command.of("todo", input.substring(5).trim());
-            } else if (input.startsWith("deadline")) {
-                if (input.length() == 8) {
-                    throw new MiloException("The description of a deadline cannot be empty!");
-                }
-                String temp = input.substring(9);
-                String[] parts = temp.split("/by");
-                if (parts.length < 2) {
-                    throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd "
-                            + "HH:mm>");
-                }
-                String dateTime = parts[1].trim();
-                try {
-                    LocalDateTime deadline = LocalDateTime.parse(dateTime, dtFormatter);
-                    return Command.of("deadline", parts[0].trim(), deadline);
-                } catch (DateTimeParseException e) {
-                    throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd "
-                            + "HH:mm>");
-                }
-            } else if (input.startsWith("event")) {
-                if (input.length() == 5) {
-                    throw new MiloException("The description of an event cannot be empty!");
-                }
-                String temp = input.substring(6);
-                int fromInd = temp.indexOf("/from");
-                int toInd = temp.indexOf("/to");
-                if (fromInd == -1 || toInd == -1) {
-                    throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
-                            + " /to <yyyy-MM-dd HH:mm>");
-                }
-                String dateTimeFrom = temp.substring(fromInd + 5, toInd).trim();
-                String dateTimeTo = temp.substring(toInd + 3).trim();
-                try {
-                    LocalDateTime eventFrom = LocalDateTime.parse(dateTimeFrom, dtFormatter);
-                    LocalDateTime eventTo = LocalDateTime.parse(dateTimeTo, dtFormatter);
-                    return Command.of("event", temp.substring(0, fromInd).trim(), eventFrom, eventTo);
-                } catch (DateTimeParseException e) {
-                    throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
-                            + " /to <yyyy-MM-dd HH:mm>");
-                }
-            }
+        String trimmedInput = input.trim();
+        if (trimmedInput.startsWith("find")) {
+            return parseFindCommand(trimmedInput);
+        } else if (isSimpleCommand(trimmedInput)) {
+            return Command.of(trimmedInput);
+        } else if (trimmedInput.startsWith("show")) {
+            return parseShowCommand(trimmedInput);
+        } else if (trimmedInput.startsWith("mark") || trimmedInput.startsWith("unmark")
+                || trimmedInput.startsWith("delete")) {
+            return parseMarkUnmarkDeleteCommand(trimmedInput);
+        } else if (trimmedInput.startsWith("todo")) {
+            return parseTodoCommand(trimmedInput);
+        } else if (trimmedInput.startsWith("deadline")) {
+            return parseDeadlineCommand(trimmedInput);
+        } else if (trimmedInput.startsWith("event")) {
+            return parseEventCommand(trimmedInput);
         }
-        throw new MiloException("I'm sorry, I don't know what that means...");
+        throw new MiloException(ERROR_INVALID_COMMAND);
+    }
+
+    /**
+     * Parses a find command from user input.
+     * @param input User input string starting with "find".
+     * @return FindCommand with the search query.
+     * @throws MiloException If the input is malformed or missing the search query.
+     */
+    private static Command parseFindCommand(String input) throws MiloException {
+        try {
+            String[] parts = input.split(" ", 2);
+            validateArgumentCount(parts, 2, ERROR_INVALID_FIND);
+            return Command.of("find", parts);
+        } catch (PatternSyntaxException e) {
+            throw new MiloException(ERROR_INVALID_FIND);
+        }
+    }
+
+    /**
+     * Checks if the input corresponds to a simple command with no arguments.
+     * @param input User input string to check.
+     * @return true if the input is a simple command, false otherwise.
+     */
+    private static boolean isSimpleCommand(String input) {
+        return input.equals("bye") || input.equals("help") || input.equals("sort")
+                || input.equals("reset") || input.equals("list");
+    }
+
+    /**
+     * Parses a show command from user input.
+     * @param input User input string starting with "show"
+     * @return ShowCommand with the specified date.
+     * @throws MiloException If the input is malformed or contains an invalid date format.
+     */
+    private static Command parseShowCommand(String input) throws MiloException {
+        String[] parts = input.split(" ");
+        validateArgumentCount(parts, 2, ERROR_INVALID_SHOW);
+        try {
+            LocalDate reqDate = LocalDate.parse(parts[1]);
+            return Command.of("show", reqDate);
+        } catch (DateTimeParseException e) {
+            throw new MiloException(ERROR_INVALID_SHOW);
+        }
+    }
+
+    /**
+     * Parses mark, unmark or delete commands from user input.
+     * @param input User input string starting with "mark", "unmark", or "delete".
+     * @return Corresponding MarkCommand, UnmarkCommand, or DeleteCommand.
+     * @throws MiloException If the input is malformed or contains an invalid task number.
+     */
+    private static Command parseMarkUnmarkDeleteCommand(String input) throws MiloException {
+        String[] parts = input.split(" ");
+        validateArgumentCount(parts, 2, ERROR_INVALID_MARK_UNMARK_DELETE);
+        try {
+            int taskNumber = Integer.parseInt(parts[1]);
+            validateTaskNumber(taskNumber);
+            if (input.startsWith("mark")) {
+                return Command.of("mark", taskNumber);
+            } else if (input.startsWith("unmark")) {
+                return Command.of("unmark", taskNumber);
+            } else {
+                return Command.of("delete", taskNumber);
+            }
+        } catch (NumberFormatException e) {
+            throw new MiloException(ERROR_INVALID_MARK_UNMARK_DELETE);
+        }
+    }
+
+    /**
+     * Validates that a task number is positive.
+     * @param taskNumber The task number to validate.
+     * @throws MiloException If the task number is not positive.
+     */
+    private static void validateTaskNumber(int taskNumber) throws MiloException {
+        if (taskNumber <= 0) {
+            throw new MiloException(ERROR_NUMBER_OUT_OF_RANGE);
+        }
+    }
+
+    /**
+     * Parses a todo command from user input.
+     * @param input User input string starting with "todo".
+     * @return TodoCommand with the task description.
+     * @throws MiloException If the input is malformed or missing the task description.
+     */
+    private static Command parseTodoCommand(String input) throws MiloException {
+        validateInputLength(input, 5, ERROR_TODO_EMPTY_DESCRIPTION);
+        validateFormat(input.charAt(4) == ' ', ERROR_TODO_FORMAT);
+        String description = input.substring(5).trim();
+        return Command.of("todo", description);
+    }
+
+    /**
+     * Parses a deadline command from user input.
+     * @param input User input string starting with "deadline".
+     * @return DeadlineCommand with the task description and deadline.
+     * @throws MiloException If the input is malformed, missing required parts, or contains an invalid date format.
+     */
+    private static Command parseDeadlineCommand(String input) throws MiloException {
+        validateInputLength(input, 9, ERROR_DEADLINE_EMPTY_DESCRIPTION);
+        String content = input.substring(9);
+        String[] parts = content.split("/by");
+        validateArgumentCount(parts, 2, ERROR_DEADLINE_FORMAT);
+        try {
+            LocalDateTime deadline = LocalDateTime.parse(parts[1].trim(), DATE_TIME_FORMATTER);
+            return Command.of("deadline", parts[0].trim(), deadline);
+        } catch (DateTimeParseException e) {
+            throw new MiloException(ERROR_DEADLINE_FORMAT);
+        }
+    }
+
+    /**
+     * Parses an event command from user input.
+     * @param input User input string starting with "event".
+     * @return EventCommand with the task description, start time, and end time.
+     * @throws MiloException If the input is malformed, missing required parts, or contains invalid date formats.
+     */
+    private static Command parseEventCommand(String input) throws MiloException {
+        validateInputLength(input, 6, ERROR_EVENT_EMPTY_DESCRIPTION);
+        String content = input.substring(6);
+        int fromIndex = content.indexOf("/from");
+        int toIndex = content.indexOf("/to");
+        validateFormat(fromIndex != -1 && toIndex != -1, ERROR_EVENT_FORMAT);
+        try {
+            String dateTimeFrom = content.substring(fromIndex + 5, toIndex).trim();
+            String dateTimeTo = content.substring(toIndex + 3).trim();
+            LocalDateTime eventFrom = LocalDateTime.parse(dateTimeFrom, DATE_TIME_FORMATTER);
+            LocalDateTime eventTo = LocalDateTime.parse(dateTimeTo, DATE_TIME_FORMATTER);
+            return Command.of("event", content.substring(0, fromIndex).trim(), eventFrom, eventTo);
+        } catch (DateTimeParseException e) {
+            throw new MiloException(ERROR_EVENT_FORMAT);
+        }
+    }
+
+    /**
+     * Validates that an array has at least the expected number of elements.
+     * @param parts The array to validate.
+     * @param expected The minimum expected number of elements.
+     * @param errorMessage The error message to use if validation fails.
+     * @throws MiloException If the array has fewer elements than expected.
+     */
+    private static void validateArgumentCount(String[] parts, int expected, String errorMessage) throws MiloException {
+        if (parts.length < expected) {
+            throw new MiloException(errorMessage);
+        }
+    }
+
+    /**
+     * Validates that a string has at least the minimum required length.
+     * @param input The string to validate.
+     * @param minLength The minimum required length.
+     * @param errorMessage The error message to use if validation fails.
+     * @throws MiloException If the string is shorter than the minimum required length.
+     */
+    private static void validateInputLength(String input, int minLength, String errorMessage) throws MiloException {
+        if (input.length() <= minLength) {
+            throw new MiloException(errorMessage);
+        }
+    }
+
+    /**
+     * Validates a condition and throws an exception if it fails.
+     * @param condition The condition to validate.
+     * @param errorMessage The error message to use if validation fails.
+     * @throws MiloException If the condition is false.
+     */
+    private static void validateFormat(boolean condition, String errorMessage) throws MiloException {
+        if (!condition) {
+            throw new MiloException(errorMessage);
+        }
     }
 }
