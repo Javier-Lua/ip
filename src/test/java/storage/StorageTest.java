@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import exception.MiloException;
 import model.Task;
 import model.TaskList;
+import ui.Ui;
 
 public class StorageTest {
     @Test
@@ -31,7 +32,7 @@ public class StorageTest {
         }
 
         TaskList tasks = new TaskList();
-        Storage storage = new Storage(tempFile.getPath(), tasks);
+        Storage storage = new Storage(tempFile.getPath(), tasks, new Ui());
 
         // Expect MiloException for first invalid line
         MiloException thrown = assertThrows(MiloException.class, storage::readFile);
@@ -49,7 +50,7 @@ public class StorageTest {
         }
 
         tasks = new TaskList();
-        storage = new Storage(tempFile.getPath(), tasks);
+        storage = new Storage(tempFile.getPath(), tasks, new Ui());
         storage.readFile();
 
         // -----------------------
