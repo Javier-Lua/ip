@@ -38,6 +38,9 @@ public class Storage {
      * @param ui User interface for error reporting.
      */
     public Storage(String filePath, TaskList tasks, Ui ui) {
+        assert filePath != null : "File path cannot be null";
+        assert !filePath.isEmpty() : "File path cannot be empty";
+        assert tasks != null : "Task list cannot be null";
         this.filePath = filePath;
         this.tasks = tasks;
         this.ui = ui;

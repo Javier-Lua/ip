@@ -40,6 +40,7 @@ public class Parser {
      * @throws MiloException If the input is invalid or cannot be parsed.
      */
     public static Command parse(String input) throws MiloException {
+        assert input != null : "Input string cannot be null";
         String trimmedInput = input.trim();
         if (trimmedInput.startsWith("find")) {
             return parseFindCommand(trimmedInput);

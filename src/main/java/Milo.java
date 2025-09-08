@@ -30,6 +30,9 @@ public class Milo {
         this.tasks = new TaskList();
         this.ui = new Ui();
         this.storage = new Storage(filePath, tasks, ui);
+        assert tasks != null : "TaskList should be initialized";
+        assert ui != null : "Ui should be initialized";
+        assert storage != null : "Storage should be initialized";
         storage.readFile();
     }
 
@@ -43,6 +46,7 @@ public class Milo {
      * @return Milo's response to the input
      */
     public String getResponse(String input) {
+        assert input != null : "Input should not be null";
         try {
             Command c = Parser.parse(input);
             return c.execute(tasks, ui, storage);
@@ -56,6 +60,7 @@ public class Milo {
      * @param args Command-line arguments, optionally containing the file path for task storage.
      */
     public static void main(String[] args) {
+        assert args != null : "Command line arguments should not be null";
         String filePath = args.length > 0 ? args[0] : "./src/main/java/milo.txt";
         // Assuming no more than 100 tasks
         try {
@@ -78,6 +83,7 @@ public class Milo {
         boolean isExit = false;
         while (!isExit) {
             String fullCommand = ui.readCommand();
+            assert fullCommand != null : "Command should not be null";
             String response = getResponse(fullCommand);
             System.out.println(response);
             try {

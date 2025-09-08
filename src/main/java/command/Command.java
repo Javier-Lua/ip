@@ -39,6 +39,7 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input) throws MiloException {
+        assert input != null : "Input string cannot be null";
         return switch (input) {
         case COMMAND_BYE -> new ExitCommand();
         case COMMAND_HELP -> new HelpCommand();
@@ -56,6 +57,8 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, int num) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert num > 0 : "Task index must be positive";
         return switch (input) {
         case COMMAND_MARK -> new MarkCommand(num);
         case COMMAND_UNMARK -> new UnmarkCommand(num);
@@ -71,6 +74,8 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, LocalDate date) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert date != null : "Date cannot be null";
         if (COMMAND_SHOW.equals(input)) {
             return new ShowCommand(date);
         }
@@ -84,6 +89,9 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, String description) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert description != null : "Description cannot be null";
+        assert !description.isEmpty() : "Description cannot be empty";
         if (COMMAND_TODO.equals(input)) {
             return new TodoCommand(description);
         }
@@ -99,6 +107,9 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command or if required dates are missing.
      */
     public static Command of(String input, String description, LocalDateTime... dates) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert description != null : "Description cannot be null";
+        assert !description.isEmpty() : "Description cannot be empty";
         return switch (input) {
         case COMMAND_DEADLINE -> createDeadlineCommand(description, dates);
         case COMMAND_EVENT -> createEventCommand(description, dates);
@@ -116,6 +127,8 @@ public abstract class Command {
      * @throws MiloException If the input command is not recognized.
      */
     public static Command of(String input, String[] keywords) throws MiloException {
+        assert input != null : "Input string cannot be null";
+        assert keywords != null : "Keywords array cannot be null";
         if (COMMAND_FIND.equals(input)) {
             String searchQuery = extractSearchQuery(keywords);
             return new FindCommand(searchQuery);
