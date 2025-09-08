@@ -13,6 +13,7 @@ import ui.Ui;
 public class DeleteCommand extends Command {
 
     private final int num;
+    private Task deletedTask;
 
     /**
      * Constructs a {@code DeleteCommand} with the specified task index.
@@ -33,12 +34,31 @@ public class DeleteCommand extends Command {
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
         if (num <= tasks.getCount()) {
-            Task temp = tasks.getTask(num - 1);
+            deletedTask = tasks.getTask(num - 1);
             tasks.delete(num - 1);
             storage.saveTasks();
-            return ui.showTaskRemoved(temp, tasks.getCount());
+            return ui.showTaskRemoved(deletedTask, tasks.getCount());
         } else {
             return ui.showError(new MiloException("Task number out of range!"));
+        }
+    }
+
+    /**
+     * Adds back the deleted task
+     * @param tasks The task list to operate on.
+     * @param ui The user interface for displaying results.
+     * @param storage The storage handler for saving changes.
+     * @return The String output message of task added.
+     */
+    @Override
+    public String undo(TaskList tasks, Ui ui, Storage storage) {
+        if (num <= tasks.getCount()) {
+            int index = num - 1;
+            tasks.addAtIndex(deletedTask, index);
+            storage.saveTasks();
+            return ui.showAddTask(deletedTask, tasks.getCount());
+        } else {
+            return ui.showError(new MiloException("Task number out of range to undo!"));
         }
     }
 }

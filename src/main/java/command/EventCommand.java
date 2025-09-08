@@ -13,11 +13,7 @@ import ui.Ui;
  * The event includes a description, a start date and time, and an end date and time.
  */
 public class EventCommand extends Command {
-
-    private final String desc;
-    private final LocalDateTime from;
-    private final LocalDateTime to;
-
+    private final Task t;
     /**
      * Constructs an EventCommand with the specified description,
      * start date and time, and end date and time.
@@ -26,9 +22,7 @@ public class EventCommand extends Command {
      * @param to the ending date and time of the event.
      */
     public EventCommand(String desc, LocalDateTime from, LocalDateTime to) {
-        this.desc = desc;
-        this.from = from;
-        this.to = to;
+        this.t = new Event(desc, from, to);
     }
 
     /**
@@ -42,10 +36,22 @@ public class EventCommand extends Command {
      */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
-        Task t = new Event(this.desc, this.from, this.to);
         tasks.add(t);
         storage.saveTasks();
         return ui.showAddTask(t, tasks.getCount());
     }
 
+    /**
+     * Removes added event task.
+     * @param tasks The task list to operate on.
+     * @param ui The user interface for displaying results.
+     * @param storage The storage handler for saving changes.
+     * @return Task deleted message.
+     */
+    @Override
+    public String undo(TaskList tasks, Ui ui, Storage storage) {
+        tasks.remove(t);
+        storage.saveTasks();
+        return ui.showTaskRemoved(t, tasks.getCount());
+    }
 }

@@ -27,23 +27,34 @@ Got it. I've added this task:
 Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
+Noted. I've removed this task:
+[D][ ] Submit report (by: Dec 12 2025 11:00)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
 Got it. I've added this task:
 [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
-Now you have 5 tasks in the list.
+Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
 [E][ ] Project meeting (from: Dec 12 2025 19:00 to: Dec 12 2025 22:00)
-Now you have 6 tasks in the list.
+Now you have 5 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+[E][ ] Project meeting (from: Dec 12 2025 19:00 to: Dec 12 2025 22:00)
+Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1. [T][ ] Buy groceries
 2. [T][ ] Clean room
 3. [D][ ] Submit report (by: Dec 12 2025 12:00)
-4. [D][ ] Submit report (by: Dec 12 2025 11:00)
-5. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
-6. [E][ ] Project meeting (from: Dec 12 2025 19:00 to: Dec 12 2025 22:00)
+4. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
+____________________________________________________________
+____________________________________________________________
+Cannot undo 'list' command.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
@@ -69,7 +80,18 @@ ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
 [T][ ] Clean room
-Now you have 5 tasks in the list.
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+[T][ ] Clean room
+Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Task number out of range!
+____________________________________________________________
+____________________________________________________________
+Task number out of range to undo!
 ____________________________________________________________
 ____________________________________________________________
 Invalid mark/delete command. Use: mark <number> or unmark <number> or delete <number>.
@@ -77,10 +99,9 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1. [T][X] Buy groceries
-2. [D][ ] Submit report (by: Dec 12 2025 12:00)
-3. [D][ ] Submit report (by: Dec 12 2025 11:00)
+2. [T][ ] Clean room
+3. [D][ ] Submit report (by: Dec 12 2025 12:00)
 4. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
-5. [E][ ] Project meeting (from: Dec 12 2025 19:00 to: Dec 12 2025 22:00)
 ____________________________________________________________
 ____________________________________________________________
 The description of a deadline cannot be empty!
@@ -109,20 +130,17 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list for Dec 12 2025:
 1. [D][ ] Submit report (by: Dec 12 2025 12:00)
-2. [D][ ] Submit report (by: Dec 12 2025 11:00)
-3. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
-4. [E][ ] Project meeting (from: Dec 12 2025 19:00 to: Dec 12 2025 22:00)
+2. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
 ____________________________________________________________
 ____________________________________________________________
 Okay! Task list has been sorted chronologically!
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
-1. [D][ ] Submit report (by: Dec 12 2025 11:00)
-2. [D][ ] Submit report (by: Dec 12 2025 12:00)
-3. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
-4. [E][ ] Project meeting (from: Dec 12 2025 19:00 to: Dec 12 2025 22:00)
-5. [T][X] Buy groceries
+1. [D][ ] Submit report (by: Dec 12 2025 12:00)
+2. [E][ ] Project meeting (from: Dec 12 2025 15:00 to: Dec 12 2025 22:00)
+3. [T][X] Buy groceries
+4. [T][ ] Clean room
 ____________________________________________________________
 ____________________________________________________________
 I'm sorry, I don't know what that means...

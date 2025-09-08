@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 
 import command.Command;
+import command.CommandHistory;
 import exception.MiloException;
 import logic.Parser;
 import model.TaskList;
@@ -17,6 +18,7 @@ public class Milo {
     private final TaskList tasks;
     private final Ui ui;
     private final Storage storage;
+    private final CommandHistory commandHistory;
 
     /**
      * Constructs a new instance of the Milo chatbot.
@@ -30,9 +32,11 @@ public class Milo {
         this.tasks = new TaskList();
         this.ui = new Ui();
         this.storage = new Storage(filePath, tasks, ui);
+        this.commandHistory = new CommandHistory();
         assert tasks != null : "TaskList should be initialized";
         assert ui != null : "Ui should be initialized";
         assert storage != null : "Storage should be initialized";
+        assert commandHistory != null : "CommandHistory should be initialized";
         storage.readFile();
     }
 
@@ -48,8 +52,12 @@ public class Milo {
     public String getResponse(String input) {
         assert input != null : "Input should not be null";
         try {
-            Command c = Parser.parse(input);
-            return c.execute(tasks, ui, storage);
+            Command c = Parser.parse(input, commandHistory);
+            String response = c.execute(tasks, ui, storage);
+            if (!(c instanceof command.UndoCommand)) {
+                commandHistory.push(c);
+            }
+            return response;
         } catch (MiloException e) {
             return ui.showError(e);
         }
@@ -87,7 +95,7 @@ public class Milo {
             String response = getResponse(fullCommand);
             System.out.println(response);
             try {
-                Command c = Parser.parse(fullCommand);
+                Command c = Parser.parse(fullCommand, commandHistory);
                 isExit = c.isExit();
             } catch (MiloException e) {
                 // ignore, since getResponse already handled it.

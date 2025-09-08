@@ -14,8 +14,7 @@ import ui.Ui;
  */
 public class DeadlineCommand extends Command {
 
-    private final String desc;
-    private final LocalDateTime date;
+    private final Task t;
 
     /**
      * Constructs a {@code DeadlineCommand} with the given description
@@ -24,8 +23,7 @@ public class DeadlineCommand extends Command {
      * @param date Due date and time of the deadline task.
      */
     public DeadlineCommand(String desc, LocalDateTime date) {
-        this.desc = desc;
-        this.date = date;
+        this.t = new Deadline(desc, date);
     }
 
     /**
@@ -39,10 +37,22 @@ public class DeadlineCommand extends Command {
      */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
-        Task t = new Deadline(this.desc, this.date);
         tasks.add(t);
         storage.saveTasks();
         return ui.showAddTask(t, tasks.getCount());
     }
 
+    /**
+     * Undo the deadline command by removing it.
+     * @param tasks The task list to operate on.
+     * @param ui The user interface for displaying results.
+     * @param storage The storage handler for saving changes.
+     * @return String output message to the user after executing command.
+     */
+    @Override
+    public String undo(TaskList tasks, Ui ui, Storage storage) {
+        tasks.remove(t);
+        storage.saveTasks();
+        return ui.showTaskRemoved(t, tasks.getCount());
+    }
 }

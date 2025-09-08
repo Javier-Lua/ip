@@ -28,6 +28,7 @@ public abstract class Command {
     private static final String COMMAND_DEADLINE = "deadline";
     private static final String COMMAND_EVENT = "event";
     private static final String COMMAND_FIND = "find";
+    private static final String COMMAND_UNDO = "undo";
     private static final String ERROR_COMMAND_NOT_FOUND = "Command not found!";
     private static final String ERROR_DEADLINE_REQUIRES_ONE_DATE = "Deadline command requires exactly one date.";
     private static final String ERROR_EVENT_REQUIRES_TWO_DATES = "Event command requires exactly two dates.";
@@ -38,7 +39,7 @@ public abstract class Command {
      * @return The corresponding {@code Command} instance.
      * @throws MiloException If the input does not match any valid command.
      */
-    public static Command of(String input) throws MiloException {
+    public static Command of(String input, CommandHistory commandHistory) throws MiloException {
         assert input != null : "Input string cannot be null";
         return switch (input) {
         case COMMAND_BYE -> new ExitCommand();
@@ -46,6 +47,7 @@ public abstract class Command {
         case COMMAND_SORT -> new SortCommand();
         case COMMAND_RESET -> new ResetCommand();
         case COMMAND_LIST -> new ListCommand();
+        case COMMAND_UNDO -> new UndoCommand(commandHistory);
         default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
         };
     }
@@ -189,4 +191,13 @@ public abstract class Command {
      * @return String output message to the user after executing command.
      */
     public abstract String execute(TaskList tasks, Ui ui, Storage storage);
+
+    /**
+     * Undo the command.
+     * @param tasks The task list to operate on.
+     * @param ui The user interface for displaying results.
+     * @param storage The storage handler for saving changes.
+     * @return String output message to the user after executing command.
+     */
+    public abstract String undo(TaskList tasks, Ui ui, Storage storage);
 }
