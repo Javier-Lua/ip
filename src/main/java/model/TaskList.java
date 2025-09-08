@@ -36,15 +36,10 @@ public class TaskList {
      */
     public TaskList filter(LocalDate date) {
         TaskList res = new TaskList();
-        for (Task task : tasks) {
-            LocalDateTime taskDateTime = task.getDateTime();
-            if (taskDateTime != null) {
-                LocalDate taskDate = taskDateTime.toLocalDate();
-                if (taskDate.equals(date)) {
-                    res.add(task);
-                }
-            }
-        }
+        tasks.stream()
+                .filter(task -> task.getDateTime() != null) // Keep only tasks with a date
+                .filter(task -> task.getDateTime().toLocalDate().equals(date)) // Keep tasks with specified date
+                .forEach(res::add); // Add each filtered task to the result
         return res;
     }
 
@@ -57,11 +52,9 @@ public class TaskList {
      */
     public TaskList filter(String desc) {
         TaskList res = new TaskList();
-        for (Task task : tasks) {
-            if (task.getDescription().contains(desc)) {
-                res.add(task);
-            }
-        }
+        tasks.stream()
+                .filter(task -> task.getDescription().contains(desc))
+                .forEach(res::add);
         return res;
     }
     /**
