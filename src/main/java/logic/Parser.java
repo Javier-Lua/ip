@@ -8,6 +8,7 @@ import java.time.format.ResolverStyle;
 import java.util.regex.PatternSyntaxException;
 
 import command.Command;
+import command.CommandHistory;
 import exception.MiloException;
 
 /**
@@ -32,6 +33,8 @@ public class Parser {
     private static final String ERROR_EVENT_EMPTY_DESCRIPTION = "The description of an event cannot be empty!";
     private static final String ERROR_EVENT_FORMAT = "Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
             + " /to <yyyy-MM-dd HH:mm>";
+    private static CommandHistory commandHistory;
+
     /**
      * Parses the given user input and returns the corresponding Command object.
      * Throws MiloException if the input is invalid or cannot be converted to a valid command.
@@ -39,13 +42,13 @@ public class Parser {
      * @return Corresponding Command object for the input.
      * @throws MiloException If the input is invalid or cannot be parsed.
      */
-    public static Command parse(String input) throws MiloException {
+    public static Command parse(String input, CommandHistory commandHistory) throws MiloException {
         assert input != null : "Input string cannot be null";
         String trimmedInput = input.trim();
         if (trimmedInput.startsWith("find")) {
             return parseFindCommand(trimmedInput);
         } else if (isSimpleCommand(trimmedInput)) {
-            return Command.of(trimmedInput);
+            return Command.of(trimmedInput, commandHistory);
         } else if (trimmedInput.startsWith("show")) {
             return parseShowCommand(trimmedInput);
         } else if (trimmedInput.startsWith("mark") || trimmedInput.startsWith("unmark")
@@ -84,7 +87,7 @@ public class Parser {
      */
     private static boolean isSimpleCommand(String input) {
         return input.equals("bye") || input.equals("help") || input.equals("sort")
-                || input.equals("reset") || input.equals("list");
+                || input.equals("reset") || input.equals("list") || input.equals("undo");
     }
 
     /**

@@ -73,11 +73,28 @@ public class TaskList {
     }
 
     /**
+     * Adds a task to the task list at the given index.
+     * @param task Task to be added.
+     * @param index The index of the task to be added.
+     */
+    public void addAtIndex(Task task, int index) {
+        tasks.add(index, task);
+    }
+
+    /**
      * Deletes the task at the specified index.
      * @param index Index of the task to be deleted.
      */
     public void delete(int index) {
         this.tasks.remove(index);
+    }
+
+    /**
+     * Deletes the task given.
+     * @param task Task to be deleted.
+     */
+    public void remove(Task task) {
+        tasks.remove(task);
     }
 
     /**

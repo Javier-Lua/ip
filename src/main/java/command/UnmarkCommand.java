@@ -37,4 +37,22 @@ public class UnmarkCommand extends Command {
             return ui.showError(new MiloException("Task number out of range!"));
         }
     }
+
+    /**
+     * Marks the task.
+     * @param tasks The task list to operate on.
+     * @param ui The user interface for displaying results.
+     * @param storage The storage handler for saving changes.
+     * @return String for marking task.
+     */
+    @Override
+    public String undo(TaskList tasks, Ui ui, Storage storage) {
+        if (num <= tasks.getCount()) {
+            tasks.mark(num - 1);
+            storage.saveTasks();
+            return ui.showTaskMarked(tasks.getTask(num - 1));
+        } else {
+            return ui.showError(new MiloException("Task number out of range!"));
+        }
+    }
 }

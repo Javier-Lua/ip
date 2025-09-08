@@ -3,9 +3,12 @@ todo Buy groceries
 todo Clean room
 deadline Submit report /by 2025-12-12 12:00
 deadline Submit report/by2025-12-12 11:00
+undo
 event Project meeting /from 2025-12-12 15:00 /to 2025-12-12 22:00
 event Project meeting/from2025-12-12 19:00/to2025-12-12 22:00
+undo
 list
+undo
 mark 1
 mark 2
 unmark 2
@@ -13,6 +16,9 @@ mark
 unmark
 delete
 delete 2
+undo
+delete 10000
+undo
 deletebjadiw
 list
 deadline

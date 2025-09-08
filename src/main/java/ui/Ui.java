@@ -79,6 +79,7 @@ public class Ui {
                         list : Displays list of all tasks
                         sort : Sorts the tasks in chronological order
                         reset : Resets list of tasks
+                        undo : Undoes the most recent command, next undo will be the command after it
                         mark/unmark <number> : Marks given task as done/undone
                         delete <number> : Deletes given task
                         find <desc> : Displays a list of tasks that match <desc>.
@@ -135,6 +136,14 @@ public class Ui {
      */
     public String showTaskCleared() {
         return buildMessage("Okay! Task list has been cleared.");
+    }
+
+    /**
+     * Displays a message when the task list has been re-added.
+     * @return Task all added message.
+     */
+    public String showTaskAllAdded() {
+        return buildMessage("Okay! Task list has been re-added.");
     }
 
     /**

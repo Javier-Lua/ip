@@ -2,6 +2,7 @@ package command;
 
 import java.time.LocalDate;
 
+import exception.MiloException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -34,5 +35,17 @@ public class ShowCommand extends Command {
     public String execute(TaskList tasks, Ui ui, Storage storage) {
         TaskList res = tasks.filter(date);
         return ui.showList(res, date);
+    }
+
+    /**
+     * Not applicable for this command.
+     * @param tasks The task list to operate on.
+     * @param ui The user interface for displaying results.
+     * @param storage The storage handler for saving changes.
+     * @return Not able to undo message.
+     */
+    @Override
+    public String undo(TaskList tasks, Ui ui, Storage storage) {
+        return ui.showError(new MiloException("Cannot undo 'show' command."));
     }
 }
