@@ -15,6 +15,22 @@ import ui.Ui;
  * based on user input and executed with the {@code execute()} method.
  */
 public abstract class Command {
+    private static final String COMMAND_BYE = "bye";
+    private static final String COMMAND_HELP = "help";
+    private static final String COMMAND_SORT = "sort";
+    private static final String COMMAND_RESET = "reset";
+    private static final String COMMAND_LIST = "list";
+    private static final String COMMAND_MARK = "mark";
+    private static final String COMMAND_UNMARK = "unmark";
+    private static final String COMMAND_DELETE = "delete";
+    private static final String COMMAND_SHOW = "show";
+    private static final String COMMAND_TODO = "todo";
+    private static final String COMMAND_DEADLINE = "deadline";
+    private static final String COMMAND_EVENT = "event";
+    private static final String COMMAND_FIND = "find";
+    private static final String ERROR_COMMAND_NOT_FOUND = "Command not found!";
+    private static final String ERROR_DEADLINE_REQUIRES_ONE_DATE = "Deadline command requires exactly one date.";
+    private static final String ERROR_EVENT_REQUIRES_TWO_DATES = "Event command requires exactly two dates.";
     /**
      * Returns a command instance based on a keyword input
      * with no arguments.
@@ -24,12 +40,12 @@ public abstract class Command {
      */
     public static Command of(String input) throws MiloException {
         return switch (input) {
-        case "bye" -> new ExitCommand();
-        case "help" -> new HelpCommand();
-        case "sort" -> new SortCommand();
-        case "reset" -> new ResetCommand();
-        case "list" -> new ListCommand();
-        default -> throw new MiloException("Command not found!");
+        case COMMAND_BYE -> new ExitCommand();
+        case COMMAND_HELP -> new HelpCommand();
+        case COMMAND_SORT -> new SortCommand();
+        case COMMAND_RESET -> new ResetCommand();
+        case COMMAND_LIST -> new ListCommand();
+        default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
         };
     }
     /**
@@ -41,10 +57,10 @@ public abstract class Command {
      */
     public static Command of(String input, int num) throws MiloException {
         return switch (input) {
-        case "mark" -> new MarkCommand(num);
-        case "unmark" -> new UnmarkCommand(num);
-        case "delete" -> new DeleteCommand(num);
-        default -> throw new MiloException("Command not found!");
+        case COMMAND_MARK -> new MarkCommand(num);
+        case COMMAND_UNMARK -> new UnmarkCommand(num);
+        case COMMAND_DELETE -> new DeleteCommand(num);
+        default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
         };
     }
     /**
@@ -55,38 +71,38 @@ public abstract class Command {
      * @throws MiloException If the input does not match any valid command.
      */
     public static Command of(String input, LocalDate date) throws MiloException {
-        if (input.equals("show")) {
+        if (COMMAND_SHOW.equals(input)) {
             return new ShowCommand(date);
         }
-        throw new MiloException("Command not found!");
+        throw new MiloException(ERROR_COMMAND_NOT_FOUND);
     }
     /**
      * Returns a command instance based on a keyword input and a string argument.
      * @param input The user input keyword (currently only todo).
-     * @param misc The task description or additional information.
+     * @param description The task description or additional information.
      * @return The corresponding {@code Command} instance.
      * @throws MiloException If the input does not match any valid command.
      */
-    public static Command of(String input, String misc) throws MiloException {
-        if (input.equals("todo")) {
-            return new TodoCommand(misc);
+    public static Command of(String input, String description) throws MiloException {
+        if (COMMAND_TODO.equals(input)) {
+            return new TodoCommand(description);
         }
-        throw new MiloException("Command not found!");
+        throw new MiloException(ERROR_COMMAND_NOT_FOUND);
     }
     /**
      * Returns a command instance based on a keyword input, a description, and one or more date-time arguments.
      * @param input The user input keyword (e.g. "deadline", "event").
-     * @param misc The task description.
+     * @param description The task description.
      * @param dates One or more {@link LocalDateTime} values required by the command.
      *              For deadlines, one date is required. For events, a start and end date are required.
      * @return The corresponding {@code Command} instance.
      * @throws MiloException If the input does not match any valid command or if required dates are missing.
      */
-    public static Command of(String input, String misc, LocalDateTime... dates) throws MiloException {
+    public static Command of(String input, String description, LocalDateTime... dates) throws MiloException {
         return switch (input) {
-        case "deadline" -> new DeadlineCommand(misc, dates[0]);
-        case "event" -> new EventCommand(misc, dates[0], dates[1]);
-        default -> throw new MiloException("Command not found!");
+        case COMMAND_DEADLINE -> createDeadlineCommand(description, dates);
+        case COMMAND_EVENT -> createEventCommand(description, dates);
+        default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
         };
     }
 
@@ -100,11 +116,49 @@ public abstract class Command {
      * @throws MiloException If the input command is not recognized.
      */
     public static Command of(String input, String[] keywords) throws MiloException {
-        if (input.equals("find")) {
-            keywords = Arrays.copyOfRange(keywords, 1, keywords.length);
-            return new FindCommand(String.join(" ", keywords));
+        if (COMMAND_FIND.equals(input)) {
+            String searchQuery = extractSearchQuery(keywords);
+            return new FindCommand(searchQuery);
         }
-        throw new MiloException("Command not found!");
+        throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+    }
+
+    /**
+     * Creates a Deadline Command
+     * @param description Description of deadline task
+     * @param dates Due date for deadline task
+     * @return Deadline command.
+     * @throws MiloException If there is 0 or more than 1 date.
+     */
+    private static Command createDeadlineCommand(String description, LocalDateTime... dates) throws MiloException {
+        if (dates.length != 1) {
+            throw new MiloException(ERROR_DEADLINE_REQUIRES_ONE_DATE);
+        }
+        return new DeadlineCommand(description, dates[0]);
+    }
+
+    /**
+     * Creates an Event Command
+     * @param description Description of event task
+     * @param dates Due dates for event task
+     * @return Event command.
+     * @throws MiloException If there is 0, 1 or more than 2 dates.
+     */
+    private static Command createEventCommand(String description, LocalDateTime... dates) throws MiloException {
+        if (dates.length != 2) {
+            throw new MiloException(ERROR_EVENT_REQUIRES_TWO_DATES);
+        }
+        return new EventCommand(description, dates[0], dates[1]);
+    }
+
+    /**
+     * Returns the search query.
+     * @param keywords Used to extract the query
+     * @return String representing the search query.
+     */
+    private static String extractSearchQuery(String[] keywords) {
+        String[] searchKeywords = Arrays.copyOfRange(keywords, 1, keywords.length);
+        return String.join(" ", searchKeywords);
     }
     /**
      * Checks if this command is an exit command.

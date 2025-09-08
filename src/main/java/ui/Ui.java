@@ -13,8 +13,8 @@ import model.TaskList;
  * Provides methods to display messages, read input, and show task-related updates.
  */
 public class Ui {
-
-    private static final DateTimeFormatter dFormatter =
+    private static final String HORIZONTAL_LINE = "____________________________________________________________";
+    private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("MMM dd yyyy").withResolverStyle(ResolverStyle.STRICT);
     private final Scanner sc;
 
@@ -30,13 +30,11 @@ public class Ui {
      * @return Welcome message.
      */
     public String showWelcome() {
-        return """
-                ____________________________________________________________
-                 Hello! I'm Milo!
-                 What can I do for you?
-                 Type 'help' for the list of commands I can understand!
-                ____________________________________________________________
-                """;
+        return buildMessage("""
+                Hello! I'm Milo!
+                What can I do for you?
+                Type 'help' for the list of commands I can understand!"""
+        );
     }
 
     /**
@@ -45,11 +43,7 @@ public class Ui {
      */
     public String showGoodbye() {
         this.sc.close();
-        return """
-                ____________________________________________________________
-                 Bye. Hope to see you again soon!
-                ____________________________________________________________
-                """;
+        return buildMessage("Bye. Hope to see you again soon!");
     }
 
     /**
@@ -63,20 +57,15 @@ public class Ui {
     /**
      * Displays a list of tasks, optionally filtered by a specific date.
      * Note the TaskList cannot be filtered using this method.
-     * @param res TaskList containing the tasks to display.
+     * @param tasks TaskList containing the tasks to display.
      * @param date Date to display the date to the user.
      * @return Filtered task list.
      */
-    public String showList(TaskList res, LocalDate date) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("____________________________________________________________\n")
-                .append(date == null ? "Here are the tasks in your list:\n"
-                        : "Here are the tasks in your list for " + date.format(dFormatter) + ":\n");
-        for (int i = 0; i < res.getCount(); i++) {
-            sb.append(i + 1).append(". ").append(res.getTask(i)).append("\n");
-        }
-        sb.append("____________________________________________________________\n");
-        return sb.toString();
+    public String showList(TaskList tasks, LocalDate date) {
+        String header = date == null
+                ? "Here are the tasks in your list:\n"
+                : "Here are the tasks in your list for " + date.format(DATE_FORMATTER) + ":\n";
+        return buildTaskList(header, tasks);
     }
 
     /**
@@ -84,21 +73,20 @@ public class Ui {
      * @return Commands list.
      */
     public String showHelp() {
-        return """
-                ____________________________________________________________
-                 show <yyyy-MM-dd> : Shows the list of tasks on the specified day
-                 list : Displays list of all tasks
-                 sort : Sorts the tasks in chronological order
-                 reset : Resets list of tasks
-                 mark/unmark <number> : Marks given task as done/undone
-                 delete <number> : Deletes given task
-                 find <desc> : Displays a list of tasks that match <desc>.
-                 todo <desc> : Creates a task with no specified date.
-                 deadline <desc> /by <yyyy-MM-dd> : Creates a task with a deadline
-                 event <desc> /from <yyyy-MM-dd> /to <yyyy-MM-dd>: Creates an event
-                 bye : Closes the chatbot
-                ____________________________________________________________
-                """;
+        return buildMessage(
+                """
+                        show <yyyy-MM-dd> : Shows the list of tasks on the specified day
+                        list : Displays list of all tasks
+                        sort : Sorts the tasks in chronological order
+                        reset : Resets list of tasks
+                        mark/unmark <number> : Marks given task as done/undone
+                        delete <number> : Deletes given task
+                        find <desc> : Displays a list of tasks that match <desc>.
+                        todo <desc> : Creates a task with no specified date.
+                        deadline <desc> /by <yyyy-MM-dd> : Creates a task with a deadline
+                        event <desc> /from <yyyy-MM-dd> /to <yyyy-MM-dd>: Creates an event
+                        bye : Closes the chatbot"""
+        );
     }
 
     /**
@@ -107,9 +95,7 @@ public class Ui {
      * @return Error message.
      */
     public String showError(Exception e) {
-        return "____________________________________________________________\n"
-                + e.getMessage() + "\n"
-                + "____________________________________________________________\n";
+        return buildMessage(e.getMessage());
     }
 
     /**
@@ -118,9 +104,7 @@ public class Ui {
      * @return Error message.
      */
     public String showTaskError(Exception e) {
-        return "____________________________________________________________\n"
-                + "Error saving tasks: " + e.getMessage() + "\n"
-                + "____________________________________________________________\n";
+        return buildMessage("Error saving tasks: " + e.getMessage());
     }
 
     /**
@@ -130,11 +114,11 @@ public class Ui {
      * @return Task added message.
      */
     public String showAddTask(Task task, int count) {
-        return "____________________________________________________________\n"
-                + "Got it. I've added this task:\n"
+        return buildMessage(
+                "Got it. I've added this task:\n"
                 + task + "\n"
-                + "Now you have " + count + " tasks in the list.\n"
-                + "____________________________________________________________\n";
+                + "Now you have " + count + " tasks in the list."
+        );
     }
 
     /**
@@ -142,11 +126,7 @@ public class Ui {
      * @return Task sorted message.
      */
     public String showTaskSorted() {
-        return """
-                ____________________________________________________________
-                Okay! Task list has been sorted chronologically!
-                ____________________________________________________________
-                """;
+        return buildMessage("Okay! Task list has been sorted chronologically!");
     }
 
     /**
@@ -154,11 +134,7 @@ public class Ui {
      * @return Task cleared message.
      */
     public String showTaskCleared() {
-        return """
-                ____________________________________________________________
-                Okay! Task list has been cleared.
-                ____________________________________________________________
-                """;
+        return buildMessage("Okay! Task list has been cleared.");
     }
 
     /**
@@ -167,11 +143,10 @@ public class Ui {
      * @return Task marked message.
      */
     public String showTaskMarked(Task task) {
-        return "____________________________________________________________"
-                + "\n"
-                + "Nice! I've marked this task as done:\n"
+        return buildMessage(
+                "Nice! I've marked this task as done:\n"
                 + task
-                + "\n" + "____________________________________________________________";
+        );
     }
 
     /**
@@ -180,11 +155,10 @@ public class Ui {
      * @return Task unmarked message.
      */
     public String showTaskUnmarked(Task task) {
-        return "____________________________________________________________"
-                + "\n"
-                + "OK, I've marked this task as not done yet:\n"
+        return buildMessage(
+                "OK, I've marked this task as not done yet:\n"
                 + task
-                + "\n" + "____________________________________________________________";
+        );
     }
 
     /**
@@ -194,11 +168,10 @@ public class Ui {
      * @return Task removed message.
      */
     public String showTaskRemoved(Task task, int count) {
-        return "____________________________________________________________"
-                + "\n"
-                + "Noted. I've removed this task:\n" + task + "\n"
-                + "Now you have " + count + " tasks in the list.\n"
-                + "____________________________________________________________\n";
+        return buildMessage(
+                "Noted. I've removed this task:\n" + task + "\n"
+                + "Now you have " + count + " tasks in the list."
+        );
     }
 
     /**
@@ -207,13 +180,30 @@ public class Ui {
      * @return Task searched message.
      */
     public String showTaskSearched(TaskList tasks) {
+        return buildTaskList("Here are the matching tasks in your list:\n", tasks);
+    }
+
+    /**
+     * Builds the message to be printed
+     * @param content The string content to be shown.
+     * @return The built message.
+     */
+    private String buildMessage(String content) {
+        return HORIZONTAL_LINE + "\n" + content + "\n" + HORIZONTAL_LINE;
+    }
+
+    /**
+     * Builds the Task List message to be printed
+     * @param header The header of the message.
+     * @param tasks The TaskList of tasks to be printed.
+     * @return The built message.
+     */
+    private String buildTaskList(String header, TaskList tasks) {
         StringBuilder sb = new StringBuilder();
-        sb.append("____________________________________________________________\n")
-                .append("Here are the matching tasks in your list:\n");
+        sb.append(header);
         for (int i = 0; i < tasks.getCount(); i++) {
             sb.append(i + 1).append(". ").append(tasks.getTask(i)).append("\n");
         }
-        sb.append("____________________________________________________________\n");
-        return sb.toString();
+        return buildMessage(sb.toString().trim());
     }
 }
