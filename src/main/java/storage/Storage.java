@@ -31,6 +31,10 @@ public class Storage {
      * @throws FileNotFoundException If the specified file does not exist.
      */
     public Storage(String filePath, TaskList tasks) throws FileNotFoundException {
+        assert filePath != null : "File path cannot be null";
+        assert !filePath.isEmpty() : "File path cannot be empty";
+        assert tasks != null : "Task list cannot be null";
+
         this.s = new Scanner(new File(filePath));
         this.filePath = filePath;
         this.tasks = tasks;
@@ -87,7 +91,11 @@ public class Storage {
             // But first, clear contents in file first.
             FileWriter fw = new FileWriter(filePath);
             for (int i = 0; i < tasks.getCount(); i++) {
-                String[] in = tasks.getTask(i).getFileInput();
+                Task task = tasks.getTask(i);
+                assert task != null : "Task at index " + i + " is null";
+                String[] in = task.getFileInput();
+                assert in != null : "File input array for task is null: " + task;
+                assert in.length > 0 : "File input array is empty for task: " + task;
                 String res = String.join(" | ", in);
                 fw.write(res + System.lineSeparator());
             }
