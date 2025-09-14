@@ -33,7 +33,7 @@ public class Parser {
     private static final String ERROR_EVENT_EMPTY_DESCRIPTION = "The description of an event cannot be empty!";
     private static final String ERROR_EVENT_FORMAT = "Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
             + " /to <yyyy-MM-dd HH:mm>";
-    private static CommandHistory commandHistory;
+    private static final String ERROR_GENERIC_PARSE = "I couldn't understand that command. Please check the format.";
 
     /**
      * Parses the given user input and returns the corresponding Command object.
@@ -44,24 +44,42 @@ public class Parser {
      */
     public static Command parse(String input, CommandHistory commandHistory) throws MiloException {
         assert input != null : "Input string cannot be null";
-        String trimmedInput = input.trim();
-        if (trimmedInput.startsWith("find")) {
-            return parseFindCommand(trimmedInput);
-        } else if (isSimpleCommand(trimmedInput)) {
-            return Command.of(trimmedInput, commandHistory);
-        } else if (trimmedInput.startsWith("show")) {
-            return parseShowCommand(trimmedInput);
-        } else if (trimmedInput.startsWith("mark") || trimmedInput.startsWith("unmark")
-                || trimmedInput.startsWith("delete")) {
-            return parseMarkUnmarkDeleteCommand(trimmedInput);
-        } else if (trimmedInput.startsWith("todo")) {
-            return parseTodoCommand(trimmedInput);
-        } else if (trimmedInput.startsWith("deadline")) {
-            return parseDeadlineCommand(trimmedInput);
-        } else if (trimmedInput.startsWith("event")) {
-            return parseEventCommand(trimmedInput);
+        if (input == null || input.trim().isEmpty()) {
+            throw new MiloException("Please enter a command. Type 'help' to see available commands.");
         }
-        throw new MiloException(ERROR_INVALID_COMMAND);
+        String trimmedInput = input.trim();
+        String commandWord = getCommandWord(trimmedInput);
+        try {
+            return switch (commandWord) {
+            case "find" -> parseFindCommand(trimmedInput);
+            case "show" -> parseShowCommand(trimmedInput);
+            case "mark", "unmark", "delete" -> parseMarkUnmarkDeleteCommand(trimmedInput);
+            case "todo" -> parseTodoCommand(trimmedInput);
+            case "deadline" -> parseDeadlineCommand(trimmedInput);
+            case "event" -> parseEventCommand(trimmedInput);
+            case "bye", "help", "sort", "reset", "list", "undo" -> Command.of(commandWord, commandHistory);
+            default -> throw new MiloException(ERROR_INVALID_COMMAND);
+            };
+        } catch (MiloException e) {
+            // Re-throw custom exceptions
+            throw e;
+        } catch (Exception e) {
+            // Catch any unexpected exceptions and provide a user-friendly message
+            throw new MiloException(ERROR_GENERIC_PARSE);
+        }
+    }
+
+    /**
+     * Extracts the command word from the input string.
+     * @param input The user input string.
+     * @return The first word of the input, converted to lowercase.
+     */
+    private static String getCommandWord(String input) {
+        int firstSpaceIndex = input.indexOf(' ');
+        if (firstSpaceIndex == -1) {
+            return input.toLowerCase();
+        }
+        return input.substring(0, firstSpaceIndex).toLowerCase();
     }
 
     /**

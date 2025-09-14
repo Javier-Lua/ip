@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 import enums.TaskType;
@@ -18,7 +19,7 @@ import ui.Ui;
  * and clear the file contents.
  */
 public class Storage {
-    private static final String TASK_DELIMITER = "\\|";
+    private static final String TASK_DELIMITER = "\\s*\\|\\s*";
     private static final String DONE_INDICATOR = "1";
     private static final String TODO_INDICATOR = "T";
     private static final String DEADLINE_INDICATOR = "D";
@@ -51,14 +52,47 @@ public class Storage {
      * @throws MiloException If a task cannot be resolved from the file content.
      */
     public void readFile() throws MiloException {
-        try (Scanner scanner = new Scanner(new File(filePath))) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                processLine(line);
-            }
-        } catch (FileNotFoundException e) {
-            // Create a new file if it doesn't exist
+        File file = new File(filePath);
+        if (!file.exists()) {
             createNewFile();
+            return;
+        }
+        checkFileReadPermissions(file);
+        try (Scanner scanner = new Scanner(file)) {
+            readAndProcessTasks(scanner);
+        } catch (FileNotFoundException e) {
+            throw new MiloException("Storage file not found: " + filePath);
+        } catch (SecurityException e) {
+            throw new MiloException("Security manager denied access to storage file: " + filePath);
+        } catch (Exception e) {
+            throw new MiloException("Unexpected error reading from storage file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Checks if file can be read.
+     * @param file The file containing task data.
+     * @throws MiloException If storage file cannot be read.
+     */
+    private void checkFileReadPermissions(File file) throws MiloException {
+        if (!file.canRead()) {
+            throw new MiloException("Cannot read from storage file: Permission denied. "
+                    + "Please check file permissions for: " + filePath);
+        }
+    }
+
+    /**
+     * Reads and processes tasks.
+     * @param scanner The scanner for tasks.
+     */
+    private void readAndProcessTasks(Scanner scanner) {
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            try {
+                processLine(line);
+            } catch (MiloException e) {
+                ui.showError(e);
+            }
         }
     }
 
@@ -69,21 +103,43 @@ public class Storage {
     private void createNewFile() throws MiloException {
         File file = new File(filePath);
         File parentDir = file.getParentFile();
-        // Create parent directories if they don't exist
+        createParentDirectories(parentDir);
+        createStorageFiles(file);
+    }
+
+    /**
+     * Creates parent directories for the storage file if they don't exist.
+     * @param parentDir The parent directory to create
+     * @throws MiloException If directory creation fails due to IO or permission issues
+     */
+    private void createParentDirectories(File parentDir) throws MiloException {
         if (parentDir != null && !parentDir.exists()) {
-            boolean directoriesCreated = parentDir.mkdirs();
-            if (!directoriesCreated) {
-                throw new MiloException("Failed to create directory: " + parentDir.getAbsolutePath());
+            try {
+                Files.createDirectories(parentDir.toPath());
+            } catch (IOException e) {
+                throw new MiloException("Failed to create directory: " + parentDir.getAbsolutePath()
+                        + ". Error: " + e.getMessage());
+            } catch (SecurityException e) {
+                throw new MiloException("Permission denied when creating directory: " + parentDir.getAbsolutePath());
             }
         }
-        // Create the file
+    }
+
+    /**
+     * Creates the storage file if it doesn't exist.
+     * @param file The file to create
+     * @throws MiloException If file creations fails due to IO or permission issues.
+     */
+    private void createStorageFiles(File file) throws MiloException {
         try {
             boolean fileCreated = file.createNewFile();
-            if (!fileCreated) {
+            if (!fileCreated && !file.exists()) {
                 throw new MiloException("Failed to create file: " + filePath);
             }
         } catch (IOException e) {
             throw new MiloException("Failed to create storage file: " + e.getMessage());
+        } catch (SecurityException e) {
+            throw new MiloException("Permission denied when creating file: " + filePath);
         }
     }
 
@@ -93,12 +149,40 @@ public class Storage {
      * @throws MiloException If the task cannot be resolved from the line.
      */
     private void processLine(String line) throws MiloException {
+        if (line.trim().isEmpty()) {
+            return;
+        }
         String[] parts = line.split(TASK_DELIMITER);
         trimAllParts(parts);
-        validatePartsLength(parts, MINIMUM_PARTS_LENGTH);
+        if (parts.length < MINIMUM_PARTS_LENGTH) {
+            throw new MiloException("Invalid task format: not enough components");
+        }
+        validateTaskType(parts[0]);
         Task task = createTaskFromParts(parts);
         markTaskIfDone(parts, task);
         tasks.add(task);
+    }
+
+    /**
+     * Validates that the task type is one of the known types.
+     * @param taskType The task type to validate.
+     * @throws MiloException If the task type is unknown.
+     */
+    private void validateTaskType(String taskType) throws MiloException {
+        if (!isValidTaskType(taskType)) {
+            throw new MiloException("Unknown task type: " + taskType);
+        }
+    }
+
+    /**
+     * Checks if the given task type is a valid known type.
+     * @param taskType The task type to check
+     * @return true if the task type is valid, else false.
+     */
+    private boolean isValidTaskType(String taskType) {
+        return TODO_INDICATOR.equals(taskType)
+                || DEADLINE_INDICATOR.equals(taskType)
+                || EVENT_INDICATOR.equals(taskType);
     }
 
     /**
@@ -107,7 +191,9 @@ public class Storage {
      */
     private void trimAllParts(String[] parts) {
         for (int i = 0; i < parts.length; i++) {
-            parts[i] = parts[i].trim();
+            if (parts[i] != null) {
+                parts[i] = parts[i].trim();
+            }
         }
     }
 
@@ -189,10 +275,54 @@ public class Storage {
      * Errors during file operations are displayed via the UI.
      */
     public void saveTasks() {
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
+        File file = new File(filePath);
+        if (file.exists() && !file.canWrite()) {
+            handleFileError(new IOException("Cannot write to storage file: Permission denied"));
+            return;
+        }
+        saveToTemporaryFile();
+    }
+
+    /**
+     * Saves tasks to a temporary file first to prevent data corruption.
+     * Replaces the original file only if the temporary file save succeeds.
+     */
+    private void saveToTemporaryFile() {
+        String tempFilePath = filePath + ".tmp";
+        File tempFile = new File(tempFilePath);
+        try (FileWriter fileWriter = new FileWriter(tempFile)) {
             writeAllTasksToFile(fileWriter);
+            replaceOriginalFile(tempFile);
         } catch (IOException e) {
+            cleanupTemporaryFile(tempFile);
             handleFileError(e);
+        } catch (SecurityException e) {
+            cleanupTemporaryFile(tempFile);
+            handleFileError(new IOException("Permission denied when saving tasks"));
+        }
+    }
+
+    /**
+     * Replaces the original file with the temporary file.
+     * @param tempFile The temporary file containing the successfully saved data
+     */
+    private void replaceOriginalFile(File tempFile) throws IOException {
+        File file = new File(filePath);
+        if (file.exists() && !file.delete()) {
+            throw new IOException("Failed to delete original file: " + filePath);
+        }
+        if (!tempFile.renameTo(file)) {
+            throw new IOException("Failed to rename temporary file to: " + filePath);
+        }
+    }
+
+    /**
+     * Cleans up the temporary file in case of errors during save operations.
+     * @param tempFile The temporary file to clean up.
+     */
+    private void cleanupTemporaryFile(File tempFile) {
+        if (tempFile.exists() && !tempFile.delete()) {
+            System.err.println("Warning: Could not delete temporary file: " + tempFile.getAbsolutePath());
         }
     }
 
@@ -224,12 +354,25 @@ public class Storage {
      * Errors during file operations are displayed via the UI.
      */
     public void clearFile() {
-        try {
-            // Create a FileWriter and immediately close it to clear file
-            FileWriter fileWriter = new FileWriter(filePath);
-            fileWriter.close();
+        File file = new File(filePath);
+        if (file.exists() && !file.canWrite()) {
+            handleFileError(new IOException("Cannot clear storage file: Permission denied"));
+            return;
+        }
+        clearFileContents();
+    }
+
+    /**
+     * Clears the contents of the storage file.
+     * Handles IO and security exceptions during the clear operation.
+     */
+    private void clearFileContents() {
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            // Simply opening and closing the file writer clears the content
         } catch (IOException e) {
             handleFileError(e);
+        } catch (SecurityException e) {
+            handleFileError(new IOException("Permission denied when clearing file"));
         }
     }
 
