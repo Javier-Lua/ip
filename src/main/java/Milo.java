@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.util.Set;
 
 import command.Command;
 import command.CommandHistory;
@@ -15,6 +16,16 @@ import ui.Ui;
  */
 public class Milo {
 
+    // Set of commands that should NOT be saved to history
+    private static final Set<Class<? extends Command>> EXCLUDED_COMMANDS = Set.of(
+            command.UndoCommand.class,
+            command.SortCommand.class,
+            command.ShowCommand.class,
+            command.ListCommand.class,
+            command.HelpCommand.class,
+            command.FindCommand.class,
+            command.ExitCommand.class
+    );
     private final TaskList tasks;
     private final Ui ui;
     private final Storage storage;
@@ -54,13 +65,22 @@ public class Milo {
         try {
             Command c = Parser.parse(input, commandHistory);
             String response = c.execute(tasks, ui, storage);
-            if (!(c instanceof command.UndoCommand)) {
+            if (shouldSaveToHistory(c)) {
                 commandHistory.push(c);
             }
             return response;
         } catch (MiloException e) {
             return ui.showError(e);
         }
+    }
+
+    /**
+     * Checks the given command if it should be added to the command history.
+     * @param command Command to check.
+     * @return True if command executed can be undone.
+     */
+    private boolean shouldSaveToHistory(Command command) {
+        return !EXCLUDED_COMMANDS.contains(command.getClass());
     }
     /**
      * Entry point for the Milo chatbot application.
