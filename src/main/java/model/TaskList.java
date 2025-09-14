@@ -52,6 +52,12 @@ public class TaskList {
      */
     public TaskList filter(String desc) {
         TaskList res = new TaskList();
+        if (desc == null || desc.trim().isEmpty()) {
+            if (desc != null && desc.isEmpty()) {
+                tasks.forEach(res::add);
+            }
+            return res;
+        }
         tasks.stream()
                 .filter(task -> task.getDescription().contains(desc))
                 .forEach(res::add);
