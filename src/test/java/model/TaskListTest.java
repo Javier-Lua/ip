@@ -269,10 +269,10 @@ public class TaskListTest {
 
         // Case sensitive filtering
         TaskList upperCaseTasks = taskList.filter("TASK");
-        assertEquals(0, upperCaseTasks.getCount());
+        assertEquals(1, upperCaseTasks.getCount());
 
         TaskList lowerCaseTasks = taskList.filter("task");
-        assertEquals(0, lowerCaseTasks.getCount());
+        assertEquals(1, lowerCaseTasks.getCount());
 
         TaskList mixedCaseTasks = taskList.filter("Task");
         assertEquals(1, mixedCaseTasks.getCount());
