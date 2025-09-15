@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * Represents a list of tasks with functionality to add, delete, sort, filter,
@@ -58,8 +59,11 @@ public class TaskList {
             }
             return res;
         }
+        String needle = desc.toLowerCase(Locale.ROOT);
         tasks.stream()
-                .filter(task -> task.getDescription().contains(desc))
+                .filter(task -> task.getDescription()
+                        .toLowerCase(Locale.ROOT)
+                        .contains(needle))
                 .forEach(res::add);
         return res;
     }

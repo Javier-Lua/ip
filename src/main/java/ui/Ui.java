@@ -84,8 +84,8 @@ public class Ui {
                         delete <number> : Deletes given task
                         find <desc> : Displays a list of tasks that match <desc>.
                         todo <desc> : Creates a task with no specified date.
-                        deadline <desc> /by <yyyy-MM-dd> : Creates a task with a deadline
-                        event <desc> /from <yyyy-MM-dd> /to <yyyy-MM-dd>: Creates an event
+                        deadline <desc> /by <yyyy-MM-dd HH:mm> : Creates a task with a deadline
+                        event <desc> /from <yyyy-MM-dd HH:mm> /to <yyyy-MM-dd HH:mm>: Creates an event
                         bye : Closes the chatbot"""
         );
     }
