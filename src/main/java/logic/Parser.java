@@ -91,21 +91,11 @@ public class Parser {
     private static Command parseFindCommand(String input) throws MiloException {
         try {
             String[] parts = input.split(" ", 2);
-            validateArgumentCount(parts, 2, ERROR_INVALID_FIND);
+            validateArgumentCount(parts, ERROR_INVALID_FIND);
             return Command.of("find", parts);
         } catch (PatternSyntaxException e) {
             throw new MiloException(ERROR_INVALID_FIND);
         }
-    }
-
-    /**
-     * Checks if the input corresponds to a simple command with no arguments.
-     * @param input User input string to check.
-     * @return true if the input is a simple command, false otherwise.
-     */
-    private static boolean isSimpleCommand(String input) {
-        return input.equals("bye") || input.equals("help") || input.equals("sort")
-                || input.equals("reset") || input.equals("list") || input.equals("undo");
     }
 
     /**
@@ -116,7 +106,7 @@ public class Parser {
      */
     private static Command parseShowCommand(String input) throws MiloException {
         String[] parts = input.split(" ");
-        validateArgumentCount(parts, 2, ERROR_INVALID_SHOW);
+        validateArgumentCount(parts, ERROR_INVALID_SHOW);
         try {
             LocalDate reqDate = LocalDate.parse(parts[1]);
             return Command.of("show", reqDate);
@@ -133,7 +123,7 @@ public class Parser {
      */
     private static Command parseMarkUnmarkDeleteCommand(String input) throws MiloException {
         String[] parts = input.split(" ");
-        validateArgumentCount(parts, 2, ERROR_INVALID_MARK_UNMARK_DELETE);
+        validateArgumentCount(parts, ERROR_INVALID_MARK_UNMARK_DELETE);
         try {
             int taskNumber = Integer.parseInt(parts[1]);
             validateTaskNumber(taskNumber);
@@ -183,7 +173,7 @@ public class Parser {
         validateInputLength(input, 9, ERROR_DEADLINE_EMPTY_DESCRIPTION);
         String content = input.substring(9);
         String[] parts = content.split("/by");
-        validateArgumentCount(parts, 2, ERROR_DEADLINE_FORMAT);
+        validateArgumentCount(parts, ERROR_DEADLINE_FORMAT);
         try {
             LocalDateTime deadline = LocalDateTime.parse(parts[1].trim(), DATE_TIME_FORMATTER);
             return Command.of("deadline", parts[0].trim(), deadline);
@@ -217,13 +207,13 @@ public class Parser {
 
     /**
      * Validates that an array has at least the expected number of elements.
-     * @param parts The array to validate.
-     * @param expected The minimum expected number of elements.
+     *
+     * @param parts        The array to validate.
      * @param errorMessage The error message to use if validation fails.
      * @throws MiloException If the array has fewer elements than expected.
      */
-    private static void validateArgumentCount(String[] parts, int expected, String errorMessage) throws MiloException {
-        if (parts.length < expected) {
+    private static void validateArgumentCount(String[] parts, String errorMessage) throws MiloException {
+        if (parts.length < 2) {
             throw new MiloException(errorMessage);
         }
     }

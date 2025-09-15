@@ -9,7 +9,7 @@ import ui.Ui;
  * Represents a command to undo the last executed command.
  */
 public class UndoCommand extends Command {
-    private CommandHistory history;
+    private final CommandHistory history;
 
     public UndoCommand(CommandHistory history) {
         this.history = history;

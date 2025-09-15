@@ -26,12 +26,4 @@ public class CommandHistory {
         }
         return history.pop();
     }
-
-    /**
-     * Checks if the history is empty.
-     * @return True if empty, false otherwise.
-     */
-    public boolean isEmpty() {
-        return history.isEmpty();
-    }
 }

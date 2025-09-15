@@ -100,15 +100,6 @@ public class Ui {
     }
 
     /**
-     * Displays an error message when saving tasks fails.
-     * @param e Exception containing error details.
-     * @return Error message.
-     */
-    public String showTaskError(Exception e) {
-        return buildMessage("Error saving tasks: " + e.getMessage());
-    }
-
-    /**
      * Displays a message when a task is added to the list.
      * @param task Task that was added.
      * @param count Current number of tasks in the list.
