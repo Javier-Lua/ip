@@ -1,6 +1,6 @@
 package command;
 
-import exception.MiloException;
+import exception.RotomException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -36,7 +36,7 @@ public class MarkCommand extends Command {
             storage.saveTasks();
             return ui.showTaskMarked(tasks.getTask(num - 1));
         } else {
-            return ui.showError(new MiloException("Task number out of range!"));
+            return ui.showError(new RotomException("Task number out of range!"));
         }
     }
 
@@ -54,7 +54,7 @@ public class MarkCommand extends Command {
             storage.saveTasks();
             return ui.showTaskUnmarked(tasks.getTask(num - 1));
         } else {
-            return ui.showError(new MiloException("Task number out of range to undo!"));
+            return ui.showError(new RotomException("Task number out of range to undo!"));
         }
     }
 }

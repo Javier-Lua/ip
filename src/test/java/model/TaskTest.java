@@ -9,33 +9,33 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
 import enums.TaskType;
-import exception.MiloException;
+import exception.RotomException;
 
 public class TaskTest {
     @Test
     public void testMakeTask_edgeCases() {
         // TODO with empty description
-        assertThrows(MiloException.class, () -> Task.makeTask(TaskType.TODO, ""));
+        assertThrows(RotomException.class, () -> Task.makeTask(TaskType.TODO, ""));
 
         // DEADLINE missing date
-        assertThrows(MiloException.class, () -> Task.makeTask(TaskType.DEADLINE, "Report"));
+        assertThrows(RotomException.class, () -> Task.makeTask(TaskType.DEADLINE, "Report"));
 
         // DEADLINE malformed date
-        assertThrows(MiloException.class, () ->
+        assertThrows(RotomException.class, () ->
                 Task.makeTask(TaskType.DEADLINE, "Report", "12-12-2025 12:00"));
 
         // EVENT missing dates
-        assertThrows(MiloException.class, () -> Task.makeTask(TaskType.EVENT, "Meeting"));
-        assertThrows(MiloException.class, () ->
+        assertThrows(RotomException.class, () -> Task.makeTask(TaskType.EVENT, "Meeting"));
+        assertThrows(RotomException.class, () ->
                 Task.makeTask(TaskType.EVENT, "Meeting", "2025-12-12T15:00"));
 
         // EVENT malformed dates
-        assertThrows(MiloException.class, () ->
+        assertThrows(RotomException.class, () ->
                 Task.makeTask(TaskType.EVENT, "Meeting", "15:00", "22:00"));
     }
 
     @Test
-    public void testMakeTask_validCases() throws MiloException {
+    public void testMakeTask_validCases() throws RotomException {
         // TODO
         Task todo = Task.makeTask(TaskType.TODO, "Buy groceries");
         assertEquals("Buy groceries", todo.getDescription());

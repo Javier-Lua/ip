@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import exception.MiloException;
+import exception.RotomException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
 
 /**
- * Represents an abstract command in the Milo application.
+ * Represents an abstract command in the Rotom application.
  * Concrete commands are created using the factory {@code of()} methods
  * based on user input and executed with the {@code execute()} method.
  */
@@ -37,9 +37,9 @@ public abstract class Command {
      * with no arguments.
      * @param input The user input keyword (e.g. "bye", "help", "sort" etc.).
      * @return The corresponding {@code Command} instance.
-     * @throws MiloException If the input does not match any valid command.
+     * @throws RotomException If the input does not match any valid command.
      */
-    public static Command of(String input, CommandHistory commandHistory) throws MiloException {
+    public static Command of(String input, CommandHistory commandHistory) throws RotomException {
         assert input != null : "Input string cannot be null";
         return switch (input) {
         case COMMAND_BYE -> new ExitCommand();
@@ -48,7 +48,7 @@ public abstract class Command {
         case COMMAND_RESET -> new ResetCommand();
         case COMMAND_LIST -> new ListCommand();
         case COMMAND_UNDO -> new UndoCommand(commandHistory);
-        default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+        default -> throw new RotomException(ERROR_COMMAND_NOT_FOUND);
         };
     }
     /**
@@ -56,16 +56,16 @@ public abstract class Command {
      * @param input The user input keyword.
      * @param num The index of the task to be affected.
      * @return The corresponding {@code Command} instance.
-     * @throws MiloException If the input does not match any valid command.
+     * @throws RotomException If the input does not match any valid command.
      */
-    public static Command of(String input, int num) throws MiloException {
+    public static Command of(String input, int num) throws RotomException {
         assert input != null : "Input string cannot be null";
         assert num > 0 : "Task index must be positive";
         return switch (input) {
         case COMMAND_MARK -> new MarkCommand(num);
         case COMMAND_UNMARK -> new UnmarkCommand(num);
         case COMMAND_DELETE -> new DeleteCommand(num);
-        default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+        default -> throw new RotomException(ERROR_COMMAND_NOT_FOUND);
         };
     }
     /**
@@ -73,31 +73,31 @@ public abstract class Command {
      * @param input The user input keyword
      * @param date The date used to filter tasks.
      * @return The corresponding {@code Command} instance.
-     * @throws MiloException If the input does not match any valid command.
+     * @throws RotomException If the input does not match any valid command.
      */
-    public static Command of(String input, LocalDate date) throws MiloException {
+    public static Command of(String input, LocalDate date) throws RotomException {
         assert input != null : "Input string cannot be null";
         assert date != null : "Date cannot be null";
         if (COMMAND_SHOW.equals(input)) {
             return new ShowCommand(date);
         }
-        throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+        throw new RotomException(ERROR_COMMAND_NOT_FOUND);
     }
     /**
      * Returns a command instance based on a keyword input and a string argument.
      * @param input The user input keyword (currently only todo).
      * @param description The task description or additional information.
      * @return The corresponding {@code Command} instance.
-     * @throws MiloException If the input does not match any valid command.
+     * @throws RotomException If the input does not match any valid command.
      */
-    public static Command of(String input, String description) throws MiloException {
+    public static Command of(String input, String description) throws RotomException {
         assert input != null : "Input string cannot be null";
         assert description != null : "Description cannot be null";
         assert !description.isEmpty() : "Description cannot be empty";
         if (COMMAND_TODO.equals(input)) {
             return new TodoCommand(description);
         }
-        throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+        throw new RotomException(ERROR_COMMAND_NOT_FOUND);
     }
     /**
      * Returns a command instance based on a keyword input, a description, and one or more date-time arguments.
@@ -106,16 +106,16 @@ public abstract class Command {
      * @param dates One or more {@link LocalDateTime} values required by the command.
      *              For deadlines, one date is required. For events, a start and end date are required.
      * @return The corresponding {@code Command} instance.
-     * @throws MiloException If the input does not match any valid command or if required dates are missing.
+     * @throws RotomException If the input does not match any valid command or if required dates are missing.
      */
-    public static Command of(String input, String description, LocalDateTime... dates) throws MiloException {
+    public static Command of(String input, String description, LocalDateTime... dates) throws RotomException {
         assert input != null : "Input string cannot be null";
         assert description != null : "Description cannot be null";
         assert !description.isEmpty() : "Description cannot be empty";
         return switch (input) {
         case COMMAND_DEADLINE -> createDeadlineCommand(description, dates);
         case COMMAND_EVENT -> createEventCommand(description, dates);
-        default -> throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+        default -> throw new RotomException(ERROR_COMMAND_NOT_FOUND);
         };
     }
 
@@ -126,16 +126,16 @@ public abstract class Command {
      * @param input Input command string.
      * @param keywords Array of keywords related to the command.
      * @return Command corresponding to the input and keywords.
-     * @throws MiloException If the input command is not recognized.
+     * @throws RotomException If the input command is not recognized.
      */
-    public static Command of(String input, String[] keywords) throws MiloException {
+    public static Command of(String input, String[] keywords) throws RotomException {
         assert input != null : "Input string cannot be null";
         assert keywords != null : "Keywords array cannot be null";
         if (COMMAND_FIND.equals(input)) {
             String searchQuery = extractSearchQuery(keywords);
             return new FindCommand(searchQuery);
         }
-        throw new MiloException(ERROR_COMMAND_NOT_FOUND);
+        throw new RotomException(ERROR_COMMAND_NOT_FOUND);
     }
 
     /**
@@ -143,11 +143,11 @@ public abstract class Command {
      * @param description Description of deadline task
      * @param dates Due date for deadline task
      * @return Deadline command.
-     * @throws MiloException If there is 0 or more than 1 date.
+     * @throws RotomException If there is 0 or more than 1 date.
      */
-    private static Command createDeadlineCommand(String description, LocalDateTime... dates) throws MiloException {
+    private static Command createDeadlineCommand(String description, LocalDateTime... dates) throws RotomException {
         if (dates.length != 1) {
-            throw new MiloException(ERROR_DEADLINE_REQUIRES_ONE_DATE);
+            throw new RotomException(ERROR_DEADLINE_REQUIRES_ONE_DATE);
         }
         return new DeadlineCommand(description, dates[0]);
     }
@@ -157,11 +157,11 @@ public abstract class Command {
      * @param description Description of event task
      * @param dates Due dates for event task
      * @return Event command.
-     * @throws MiloException If there is 0, 1 or more than 2 dates.
+     * @throws RotomException If there is 0, 1 or more than 2 dates.
      */
-    private static Command createEventCommand(String description, LocalDateTime... dates) throws MiloException {
+    private static Command createEventCommand(String description, LocalDateTime... dates) throws RotomException {
         if (dates.length != 2) {
-            throw new MiloException(ERROR_EVENT_REQUIRES_TWO_DATES);
+            throw new RotomException(ERROR_EVENT_REQUIRES_TWO_DATES);
         }
         return new EventCommand(description, dates[0], dates[1]);
     }

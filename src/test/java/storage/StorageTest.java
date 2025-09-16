@@ -11,10 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 
+import exception.RotomException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import exception.MiloException;
 import model.Task;
 import model.TaskList;
 import ui.Ui;
@@ -25,7 +25,7 @@ public class StorageTest {
 
     @Test
     public void testReadFile() throws Exception {
-        File tempFile = new File(tempDir.toFile(), "testMilo.txt");
+        File tempFile = new File(tempDir.toFile(), "testRotom.txt");
 
         // -----------------------
         // Test invalid lines (should be skipped with error messages)
@@ -100,8 +100,8 @@ public class StorageTest {
         TaskList tasks = new TaskList();
         Storage storage = new Storage(tempFile.getPath(), tasks, new Ui());
 
-        // Should throw MiloException with permission error
-        MiloException thrown = assertThrows(MiloException.class, storage::readFile);
+        // Should throw RotomException with permission error
+        RotomException thrown = assertThrows(RotomException.class, storage::readFile);
         assertTrue(thrown.getMessage().contains("Permission denied"));
     }
 
@@ -136,7 +136,7 @@ public class StorageTest {
     @Test
     public void testCreateNewFile() throws Exception {
         // Test creating a new file in a non-existent directory
-        File newFile = new File(tempDir.toFile(), "newdir/testMilo.txt");
+        File newFile = new File(tempDir.toFile(), "newdir/testRotom.txt");
 
         TaskList tasks = new TaskList();
         Storage storage = new Storage(newFile.getPath(), tasks, new Ui());

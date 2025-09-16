@@ -56,7 +56,7 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-    public static DialogBox getMiloDialog(String text, Image img) {
+    public static DialogBox getRotomDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
         return db;

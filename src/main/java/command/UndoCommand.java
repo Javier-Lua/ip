@@ -1,6 +1,6 @@
 package command;
 
-import exception.MiloException;
+import exception.RotomException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -27,7 +27,7 @@ public class UndoCommand extends Command {
         if (lastCommand != null) {
             return lastCommand.undo(tasks, ui, storage);
         } else {
-            return ui.showError(new MiloException("Nothing to undo."));
+            return ui.showError(new RotomException("Nothing to undo."));
         }
     }
 
@@ -40,6 +40,6 @@ public class UndoCommand extends Command {
      */
     @Override
     public String undo(TaskList tasks, Ui ui, Storage storage) {
-        return ui.showError(new MiloException("Cannot undo 'undo' command."));
+        return ui.showError(new RotomException("Cannot undo 'undo' command."));
     }
 }

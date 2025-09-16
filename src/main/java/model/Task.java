@@ -5,7 +5,7 @@ import java.time.format.DateTimeParseException;
 
 import enums.Status;
 import enums.TaskType;
-import exception.MiloException;
+import exception.RotomException;
 
 /**
  * Represents a general task with a description and completion status.
@@ -33,36 +33,36 @@ public abstract class Task {
      * @param desc Description of the task.
      * @param dates Optional date(s) depending on the task type.
      * @return Constructed {@code Task} object.
-     * @throws MiloException If task type is unknown, description is empty, or dates are invalid.
+     * @throws RotomException If task type is unknown, description is empty, or dates are invalid.
      */
-    public static Task makeTask(TaskType type, String desc, String... dates) throws MiloException {
+    public static Task makeTask(TaskType type, String desc, String... dates) throws RotomException {
         if (desc == null || desc.isBlank()) {
-            throw new MiloException("Task description cannot be empty");
+            throw new RotomException("Task description cannot be empty");
         }
         switch(type) {
         case TODO:
             return new Todo(desc);
         case DEADLINE:
             if (dates.length != 1) {
-                throw new MiloException("Deadline needs one date!");
+                throw new RotomException("Deadline needs one date!");
             }
             try {
                 return new Deadline(desc, LocalDateTime.parse(dates[0]));
             } catch (DateTimeParseException e) {
-                throw new MiloException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " + "HH:mm>");
+                throw new RotomException("Invalid deadline format! Use: deadline <desc> /by <yyyy-MM-dd " + "HH:mm>");
             }
         case EVENT:
             if (dates.length != 2) {
-                throw new MiloException("Event needs two dates!");
+                throw new RotomException("Event needs two dates!");
             }
             try {
                 return new Event(desc, LocalDateTime.parse(dates[0]), LocalDateTime.parse(dates[1]));
             } catch (DateTimeParseException e) {
-                throw new MiloException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
+                throw new RotomException("Invalid event format! Use: event <desc> /from <yyyy-MM-dd HH:mm>"
                         + " /to <yyyy-MM-dd HH:mm>");
             }
         default:
-            throw new MiloException("Unknown Task Type: " + type);
+            throw new RotomException("Unknown Task Type: " + type);
         }
     }
 

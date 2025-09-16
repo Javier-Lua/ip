@@ -1,6 +1,6 @@
-# Milo project template
+# Rotom project template
 
-This is a project template for a greenfield Java project. It's named after the _Milo_ drink. Given below are instructions on how to use it.
+This is a project template for a greenfield Java project. It's named after the _Rotom_ Pokémon. Given below are instructions on how to use it.
 
 ## Setting up in Intellij
 
@@ -16,7 +16,7 @@ Prerequisites: JDK 17, update Intellij to the most recent version.
 1. After that, locate the `src/main/java/Launcher.java` file, right-click it, and choose `Run Launcher.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see a GUI pop up with the message:
    ```
    ____________________________________________________________
-    Hello! I'm Milo!
+    Hello! I'm Rotom!
     What can I do for you?
     Type 'help' for the list of commands I can understand!
    ____________________________________________________________
