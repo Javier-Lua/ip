@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
+import exception.RotomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import enums.TaskType;
-import exception.MiloException;
 
 /**
  * Test class for TaskList functionality.
@@ -25,7 +25,7 @@ public class TaskListTest {
     private Task eventTask;
 
     @BeforeEach
-    public void setUp() throws MiloException {
+    public void setUp() throws RotomException {
         taskList = new TaskList();
 
         // Create test tasks
@@ -177,7 +177,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testSortTasks() throws MiloException {
+    public void testSortTasks() throws RotomException {
         // Create tasks with different dates
         Task earlyDeadline = Task.makeTask(TaskType.DEADLINE, "Early deadline",
                 "2023-12-10T12:00");
@@ -204,7 +204,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testFilterByDate() throws MiloException {
+    public void testFilterByDate() throws RotomException {
         LocalDate today = LocalDate.of(2023, 12, 12);
 
         Task todayDeadline = Task.makeTask(TaskType.DEADLINE, "Today deadline",
@@ -235,7 +235,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testFilterByDescription() throws MiloException {
+    public void testFilterByDescription() throws RotomException {
         Task buyGroceries = Task.makeTask(TaskType.TODO, "Buy groceries");
         Task buyBooks = Task.makeTask(TaskType.TODO, "Buy books");
         Task readBooks = Task.makeTask(TaskType.TODO, "Read books");
@@ -262,7 +262,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testFilterByDescriptionCaseSensitivity() throws MiloException {
+    public void testFilterByDescriptionCaseSensitivity() throws RotomException {
         Task task = Task.makeTask(TaskType.TODO, "Case Sensitive Task");
 
         taskList.add(task);
@@ -279,7 +279,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testFilterByEmptyDescription() throws MiloException {
+    public void testFilterByEmptyDescription() throws RotomException {
         Task task = Task.makeTask(TaskType.TODO, "Test task");
 
         taskList.add(task);

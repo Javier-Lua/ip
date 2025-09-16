@@ -1,6 +1,6 @@
 package command;
 
-import exception.MiloException;
+import exception.RotomException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -43,6 +43,6 @@ public class FindCommand extends Command {
      */
     @Override
     public String undo(TaskList tasks, Ui ui, Storage storage) {
-        return ui.showError(new MiloException("Cannot undo 'find' command."));
+        return ui.showError(new RotomException("Cannot undo 'find' command."));
     }
 }

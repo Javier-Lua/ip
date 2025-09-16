@@ -31,9 +31,10 @@ public class Ui {
      */
     public String showWelcome() {
         return buildMessage("""
-                Hello! I'm Milo!
+                Hello! I'm Rotom,
+                your electrifying task helper! ⚡
                 What can I do for you?
-                Type 'help' for the list of commands I can understand!"""
+                Type 'help' for the list of commands I understand!"""
         );
     }
 

@@ -2,7 +2,7 @@ package command;
 
 import java.time.LocalDate;
 
-import exception.MiloException;
+import exception.RotomException;
 import model.TaskList;
 import storage.Storage;
 import ui.Ui;
@@ -46,6 +46,6 @@ public class ShowCommand extends Command {
      */
     @Override
     public String undo(TaskList tasks, Ui ui, Storage storage) {
-        return ui.showError(new MiloException("Cannot undo 'show' command."));
+        return ui.showError(new RotomException("Cannot undo 'show' command."));
     }
 }

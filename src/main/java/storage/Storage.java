@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.util.Scanner;
 
 import enums.TaskType;
-import exception.MiloException;
+import exception.RotomException;
 import model.Task;
 import model.TaskList;
 import ui.Ui;
@@ -49,9 +49,9 @@ public class Storage {
 
     /**
      * Reads tasks from the storage file and adds them to the task list.
-     * @throws MiloException If a task cannot be resolved from the file content.
+     * @throws RotomException If a task cannot be resolved from the file content.
      */
-    public void readFile() throws MiloException {
+    public void readFile() throws RotomException {
         File file = new File(filePath);
         if (!file.exists()) {
             createNewFile();
@@ -61,22 +61,22 @@ public class Storage {
         try (Scanner scanner = new Scanner(file)) {
             readAndProcessTasks(scanner);
         } catch (FileNotFoundException e) {
-            throw new MiloException("Storage file not found: " + filePath);
+            throw new RotomException("Storage file not found: " + filePath);
         } catch (SecurityException e) {
-            throw new MiloException("Security manager denied access to storage file: " + filePath);
+            throw new RotomException("Security manager denied access to storage file: " + filePath);
         } catch (Exception e) {
-            throw new MiloException("Unexpected error reading from storage file: " + e.getMessage());
+            throw new RotomException("Unexpected error reading from storage file: " + e.getMessage());
         }
     }
 
     /**
      * Checks if file can be read.
      * @param file The file containing task data.
-     * @throws MiloException If storage file cannot be read.
+     * @throws RotomException If storage file cannot be read.
      */
-    private void checkFileReadPermissions(File file) throws MiloException {
+    private void checkFileReadPermissions(File file) throws RotomException {
         if (!file.canRead()) {
-            throw new MiloException("Cannot read from storage file: Permission denied. "
+            throw new RotomException("Cannot read from storage file: Permission denied. "
                     + "Please check file permissions for: " + filePath);
         }
     }
@@ -90,7 +90,7 @@ public class Storage {
             String line = scanner.nextLine();
             try {
                 processLine(line);
-            } catch (MiloException e) {
+            } catch (RotomException e) {
                 ui.showError(e);
             }
         }
@@ -98,9 +98,9 @@ public class Storage {
 
     /**
      * Creates a new storage file if it doesn't exist.
-     * @throws MiloException If file creation fails.
+     * @throws RotomException If file creation fails.
      */
-    private void createNewFile() throws MiloException {
+    private void createNewFile() throws RotomException {
         File file = new File(filePath);
         File parentDir = file.getParentFile();
         createParentDirectories(parentDir);
@@ -110,17 +110,17 @@ public class Storage {
     /**
      * Creates parent directories for the storage file if they don't exist.
      * @param parentDir The parent directory to create
-     * @throws MiloException If directory creation fails due to IO or permission issues
+     * @throws RotomException If directory creation fails due to IO or permission issues
      */
-    private void createParentDirectories(File parentDir) throws MiloException {
+    private void createParentDirectories(File parentDir) throws RotomException {
         if (parentDir != null && !parentDir.exists()) {
             try {
                 Files.createDirectories(parentDir.toPath());
             } catch (IOException e) {
-                throw new MiloException("Failed to create directory: " + parentDir.getAbsolutePath()
+                throw new RotomException("Failed to create directory: " + parentDir.getAbsolutePath()
                         + ". Error: " + e.getMessage());
             } catch (SecurityException e) {
-                throw new MiloException("Permission denied when creating directory: " + parentDir.getAbsolutePath());
+                throw new RotomException("Permission denied when creating directory: " + parentDir.getAbsolutePath());
             }
         }
     }
@@ -128,34 +128,34 @@ public class Storage {
     /**
      * Creates the storage file if it doesn't exist.
      * @param file The file to create
-     * @throws MiloException If file creations fails due to IO or permission issues.
+     * @throws RotomException If file creations fails due to IO or permission issues.
      */
-    private void createStorageFiles(File file) throws MiloException {
+    private void createStorageFiles(File file) throws RotomException {
         try {
             boolean fileCreated = file.createNewFile();
             if (!fileCreated && !file.exists()) {
-                throw new MiloException("Failed to create file: " + filePath);
+                throw new RotomException("Failed to create file: " + filePath);
             }
         } catch (IOException e) {
-            throw new MiloException("Failed to create storage file: " + e.getMessage());
+            throw new RotomException("Failed to create storage file: " + e.getMessage());
         } catch (SecurityException e) {
-            throw new MiloException("Permission denied when creating file: " + filePath);
+            throw new RotomException("Permission denied when creating file: " + filePath);
         }
     }
 
     /**
      * Processes a single line from the storage file.
      * @param line The line to process.
-     * @throws MiloException If the task cannot be resolved from the line.
+     * @throws RotomException If the task cannot be resolved from the line.
      */
-    private void processLine(String line) throws MiloException {
+    private void processLine(String line) throws RotomException {
         if (line.trim().isEmpty()) {
             return;
         }
         String[] parts = line.split(TASK_DELIMITER);
         trimAllParts(parts);
         if (parts.length < MINIMUM_PARTS_LENGTH) {
-            throw new MiloException("Invalid task format: not enough components");
+            throw new RotomException("Invalid task format: not enough components");
         }
         validateTaskType(parts[0]);
         Task task = createTaskFromParts(parts);
@@ -166,11 +166,11 @@ public class Storage {
     /**
      * Validates that the task type is one of the known types.
      * @param taskType The task type to validate.
-     * @throws MiloException If the task type is unknown.
+     * @throws RotomException If the task type is unknown.
      */
-    private void validateTaskType(String taskType) throws MiloException {
+    private void validateTaskType(String taskType) throws RotomException {
         if (!isValidTaskType(taskType)) {
-            throw new MiloException("Unknown task type: " + taskType);
+            throw new RotomException("Unknown task type: " + taskType);
         }
     }
 
@@ -201,11 +201,11 @@ public class Storage {
      * Validates that the parts array meets the minimum required length.
      * @param parts The parts array to validate.
      * @param minLength The minimum required length.
-     * @throws MiloException If validation fails.
+     * @throws RotomException If validation fails.
      */
-    private void validatePartsLength(String[] parts, int minLength) throws MiloException {
+    private void validatePartsLength(String[] parts, int minLength) throws RotomException {
         if (parts.length < minLength) {
-            throw new MiloException("Invalid task format in storage file.");
+            throw new RotomException("Invalid task format in storage file.");
         }
     }
 
@@ -213,15 +213,15 @@ public class Storage {
      * Creates a task from the parsed parts of a file line.
      * @param parts The parsed components of the task.
      * @return The created task
-     * @throws MiloException If the task type is unknown.
+     * @throws RotomException If the task type is unknown.
      */
-    private Task createTaskFromParts(String[] parts) throws MiloException {
+    private Task createTaskFromParts(String[] parts) throws RotomException {
         String taskType = parts[0];
         return switch (taskType) {
         case TODO_INDICATOR -> createTodoTask(parts);
         case DEADLINE_INDICATOR -> createDeadlineTask(parts);
         case EVENT_INDICATOR -> createEventTask(parts);
-        default -> throw new MiloException("Tasks cannot be resolved.");
+        default -> throw new RotomException("Tasks cannot be resolved.");
         };
     }
 
@@ -229,9 +229,9 @@ public class Storage {
      * Creates a todo task from parts.
      * @param parts The parsed components of the task.
      * @return The created task.
-     * @throws MiloException If the task type is unknown.
+     * @throws RotomException If the task type is unknown.
      */
-    private Task createTodoTask(String[] parts) throws MiloException {
+    private Task createTodoTask(String[] parts) throws RotomException {
         validatePartsLength(parts, MINIMUM_PARTS_LENGTH);
         return Task.makeTask(TaskType.TODO, parts[2]);
     }
@@ -240,9 +240,9 @@ public class Storage {
      * Creates a Deadline task from parts.
      * @param parts The parsed components of the task.
      * @return The created task.
-     * @throws MiloException If the task type is unknown.
+     * @throws RotomException If the task type is unknown.
      */
-    private Task createDeadlineTask(String[] parts) throws MiloException {
+    private Task createDeadlineTask(String[] parts) throws RotomException {
         validatePartsLength(parts, DEADLINE_PARTS_LENGTH);
         return Task.makeTask(TaskType.DEADLINE, parts[2], parts[3]);
     }
@@ -251,9 +251,9 @@ public class Storage {
      * Creates an Event task from parts.
      * @param parts The parsed components of the task.
      * @return The created task.
-     * @throws MiloException If the task type is unknown.
+     * @throws RotomException If the task type is unknown.
      */
-    private Task createEventTask(String[] parts) throws MiloException {
+    private Task createEventTask(String[] parts) throws RotomException {
         validatePartsLength(parts, EVENT_PARTS_LENGTH);
         return Task.makeTask(TaskType.EVENT, parts[2], parts[3], parts[4]);
     }
